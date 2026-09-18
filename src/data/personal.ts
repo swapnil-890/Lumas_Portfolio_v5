@@ -67,7 +67,7 @@ export const personal: PersonalData = {
   timezone: 'IST (UTC+5:30)',
   role: 'AI & Data Science Student',
   mindset: 'Focused on understanding systems deeply rather than blindly copying tutorials.',
-  pfpImages: [],
+  pfpImages: ['/images/pfp/main-01.jpg'],
   contact: {
     emails: [
       {
