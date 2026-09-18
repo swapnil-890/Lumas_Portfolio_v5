@@ -8,6 +8,7 @@ import SectionIntroduction from './sections/SectionIntroduction'
 import SectionDigitalWorld from './sections/SectionDigitalWorld'
 import SectionSomethingSpecial from './sections/SectionSomethingSpecial'
 import { FEATURES } from './config/features'
+import { socials } from './data/socials'
 
 interface SectionDef extends NavSection {
   Component: ComponentType
@@ -110,8 +111,23 @@ export default function App() {
       </main>
 
       <footer className="border-t border-border px-4 py-8 sm:px-6 lg:px-10">
-        <div className="mx-auto flex max-w-6xl flex-col items-start justify-between gap-2 font-mono text-[11px] uppercase tracking-widest2 text-subtle sm:flex-row">
+        <div className="mx-auto flex max-w-6xl flex-col items-start justify-between gap-4 font-mono text-[11px] uppercase tracking-widest2 text-subtle sm:flex-row sm:items-center">
           <span>LUMAS™ · Personal digital archive</span>
+          <div className="flex flex-wrap gap-x-4 gap-y-1">
+            {socials
+              .filter((s) => s.isPublic && s.isPrimary && s.url)
+              .map((s) => (
+                <a
+                  key={s.id}
+                  href={s.url!}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-fg focus-visible:text-accent transition-colors"
+                >
+                  {s.label}
+                </a>
+              ))}
+          </div>
           <span>IST · {new Date().getFullYear()}</span>
         </div>
       </footer>

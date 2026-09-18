@@ -4,16 +4,15 @@ import { personal } from '../data/personal'
 export default function SectionWhoAmI() {
   return (
     <SectionShell id="who-am-i" number="03" eyebrow="Who Am I" title="On understanding systems">
-      <p className="max-w-3xl text-balance text-lg leading-relaxed text-fg sm:text-xl">
-        I want to understand how systems actually work — not simply reproduce
-        tutorials.
+      <p className="max-w-3xl text-balance text-lg leading-relaxed text-fg sm:text-xl font-medium">
+        &ldquo;{personal.mindset}&rdquo;
       </p>
 
       <div className="grid gap-6 sm:grid-cols-2">
         <p className="text-sm leading-relaxed text-muted text-pretty">
           My interests sit where computing meets the physical sciences. Rather
           than collecting surface-level familiarity, I try to reach the point
-          where a system's behaviour stops being a black box: how memory moves,
+          where a system&apos;s behaviour stops being a black box: how memory moves,
           how signals propagate, how a model arrives at an answer, how a
           physical process can be modelled and reproduced.
         </p>
@@ -21,8 +20,8 @@ export default function SectionWhoAmI() {
           That curiosity is practical. It shows up as experiments — on Linux,
           with local models, in small scripts that try to answer a question
           directly. Some of them become projects; most remain as notes. The
-          common thread is a preference for depth over breadth, and for building
-          over claiming.
+          common thread is a preference for depth over breadth, systems thinking,
+          and building over claiming.
         </p>
       </div>
 

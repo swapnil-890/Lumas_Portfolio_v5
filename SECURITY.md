@@ -1,50 +1,32 @@
-# Security
+# Security Architecture & Limitations
 
-## Section 06 — Prototype Archive
+## Section 06 — Prototype Passphrase Gate
 
-Section 06 ("Something Special") ships with a **prototype client-side
-authentication gate**. Its purpose is to demonstrate the interaction, not to
-protect data.
+Section 06 ("Something Special") includes a prototype client-side authentication gate with the demonstration passphrase `REDACTED`.
 
-### What this prototype explicitly is NOT
+### Critical Security Boundaries
 
-- Not real authentication
-- Not encrypted private storage
-- Not a secure vault
-- Not a substitute for a server
+1. **Client-Side Gate Only**:
+   - The passphrase check `REDACTED` is executed entirely in browser JavaScript.
+   - Client-side checks are cosmetic interaction demos, NOT a cryptographic control. Anyone inspecting network traffic or source bundles can view client code.
 
-### Why client-side auth is insufficient
+2. **Public Static Asset Serving**:
+   - Anything placed within the `/public` directory (such as `/public/images/pfp/` or `/public/images/archive/`) is served as static, unauthenticated assets by any static hosting provider.
+   - For this reason, `public/images/archive/*` is intentionally excluded from Git via `.gitignore`.
+   - Never place unencrypted sensitive files in `/public`.
 
-Everything the browser executes is available to the user. Any passphrase,
-unlock state, or "private" payload shipped to the client can be read directly
-from the bundle, the DOM, or DevTools. A passphrase that unlocks a UI panel is
-a demo, not a control.
+3. **Requirements for Production Private Vault**:
+   A genuinely secure private archive requires backend infrastructure:
+   - **Server-Side Authentication**: Credentials evaluated in a secure server-side runtime.
+   - **Secure Password Hashing**: Using Argon2id or bcrypt with per-user salt.
+   - **Strict Authorization**: Middleware verifying authenticated identity before serving any record.
+   - **Protected Storage**: Private cloud storage buckets (e.g. AWS S3 private, GCS) accessible only via signed short-lived URLs or server proxies.
+   - **Secure Session / Token Management**: HttpOnly, SameSite, Secure cookies or short-lived JWTs.
+   - **Rate Limiting & Brute-Force Protection**: IP and account-level throttling.
+   - **Audit Logging**: Comprehensive access tracking for private resource access.
 
-### Rules followed in this codebase
+Until such server-side infrastructure is integrated, treat Section 06 purely as a UI prototype demonstration.
 
-- No real password is hardcoded as a secret (the demo passphrase `LUMAS` is
-  deliberately public and only gates a UI panel).
-- No private archive data is stored in the public JavaScript bundle.
-- `ArchiveSlot.entry` is `null` for every slot. Nothing invented, nothing
-  hidden behind the gate.
-- No claims of production security are made anywhere in the UI.
+## Contact & Vulnerability Reporting
 
-### If real private data is ever added
-
-Do not store it in this repo or in the client bundle. Move
-authentication and storage server-side, for example:
-
-1. A server-side endpoint that authenticates the user (session cookie or
-   short-lived JWT).
-2. Rate-limited login with per-IP and per-account throttling.
-3. Archive data stored server-side (database or object storage) behind
-   authorization checks.
-4. Secrets only in server-side environment variables — never in the client.
-5. HTTPS only; secure, HttpOnly, SameSite cookies.
-6. Audit logging for reads of private content.
-
-Until that exists, treat Section 06 as decorative.
-
-## Reporting
-
-This is a personal project. Contact the maintainer directly.
+This is an open-source personal digital identity portfolio maintained by Swapnil Roy (Lumas). For inquiries or security questions, contact `swapnilroymldt@gmail.com`.
