@@ -7,8 +7,7 @@ experimental projects. Built as a static single-page application.
 
 - Vite + React + TypeScript (strict)
 - Tailwind CSS
-- Framer Motion
-- Lucide Icons
+- Framer Motion (used sparingly)
 
 ## Commands
 
@@ -35,7 +34,6 @@ src/
 │   ├── Navigation.tsx
 │   ├── SectionIndicator.tsx
 │   ├── SectionShell.tsx
-│   ├── SpotlightCard.tsx
 │   └── StatusBadge.tsx
 ├── sections/                   # six sections (01–06)
 └── features/secretArchive/     # Section 06 prototype portal

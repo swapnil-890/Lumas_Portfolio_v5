@@ -23,10 +23,14 @@
   }
 
   body {
-    @apply bg-bg text-fg font-sans antialiased selection:bg-accent/30 selection:text-white;
+    @apply bg-bg text-fg font-sans antialiased;
     text-rendering: optimizeLegibility;
     overflow-x: hidden;
-    background-color: #0a0a0b;
+  }
+
+  ::selection {
+    background: rgba(76, 141, 255, 0.28);
+    color: #ffffff;
   }
 
   :focus-visible {
@@ -35,16 +39,16 @@
     border-radius: 4px;
   }
 
-  /* Scrollbar */
+  /* Scrollbar (subtle, non-intrusive) */
   * {
     scrollbar-width: thin;
     scrollbar-color: #1e1e24 transparent;
   }
-  *::-webkit-scrollbar { width: 6px; height: 6px; }
+  *::-webkit-scrollbar { width: 8px; height: 8px; }
   *::-webkit-scrollbar-track { background: transparent; }
   *::-webkit-scrollbar-thumb {
     background: #1e1e24;
-    border-radius: 9999px;
+    border-radius: 8px;
   }
   *::-webkit-scrollbar-thumb:hover { background: #2a2a32; }
 }
@@ -52,17 +56,4 @@
 @layer utilities {
   .text-balance { text-wrap: balance; }
   .text-pretty { text-wrap: pretty; }
-}
-
-/* Subtle background grid effect */
-.bg-grid-pattern {
-  background-size: 36px 36px;
-  background-image: 
-    linear-gradient(to right, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
-}
-
-/* Subtle ambient beam */
-.ambient-glow {
-  background: radial-gradient(circle at 50% 0%, rgba(76, 141, 255, 0.08) 0%, transparent 70%);
 }
