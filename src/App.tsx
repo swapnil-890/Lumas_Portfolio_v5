@@ -109,7 +109,8 @@ export default function App() {
         (t.tagName === 'INPUT' ||
           t.tagName === 'TEXTAREA' ||
           t.tagName === 'SELECT' ||
-          t.isContentEditable)
+          t.isContentEditable ||
+          Boolean(t.closest && t.closest('.coin-btn')))
       ) {
         return
       }
