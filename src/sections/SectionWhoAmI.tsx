@@ -24,18 +24,10 @@ export default function SectionWhoAmI() {
 
       <div className="grid gap-6 sm:grid-cols-2">
         <p className="text-sm leading-relaxed text-muted text-pretty">
-          My interests sit where computing meets the physical sciences. Rather
-          than collecting surface-level familiarity, I try to reach the point
-          where a system&apos;s behaviour stops being a black box: how memory moves,
-          how signals propagate, how a model arrives at an answer, how a
-          physical process can be modelled and reproduced.
+          My work sits at the intersection of computing and the physical sciences. Rather than settling for surface-level familiarity, I aim to open the black box: how memory moves, how signals propagate, how a model reaches its answer, and how a physical process can be modelled and reproduced.
         </p>
         <p className="text-sm leading-relaxed text-muted text-pretty">
-          That curiosity is practical. It shows up as experiments — on Linux,
-          with local models, in small scripts that try to answer a question
-          directly. Some of them become projects; most remain as notes. The
-          common thread is a preference for depth over breadth, systems thinking,
-          and building over claiming.
+          That curiosity is hands-on. It takes the form of experiments — on Linux, with locally run models, and in small scripts written to answer a single question directly. Some grow into projects; many remain as working notes. The common thread is a preference for depth over breadth, systems thinking, and building over claiming.
         </p>
       </div>
 

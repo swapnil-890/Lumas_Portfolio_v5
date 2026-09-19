@@ -25,15 +25,13 @@ export default function SectionIntroduction() {
         <div className="space-y-4">
           <StatusBadge label={personal.role} tone="accent" />
           <p className="text-sm leading-relaxed text-muted text-pretty">
-            Currently focused on AI and data science, with a parallel pull
-            toward scientific computing, robotics, and aerospace. The work below
-            reflects exploration rather than claimed expertise.
+            Currently focused on AI and data science, alongside a growing interest in scientific computing, robotics and aerospace. The work below reflects continuous exploration, not claimed expertise.
           </p>
         </div>
 
         <div>
           <p className="mb-3 font-mono text-[11px] uppercase tracking-widest2 text-subtle">
-            Learning / exploration
+            Learning & exploration
           </p>
           <ul className="grid grid-cols-2 gap-2">
             {personal.focusAreas.map((area) => (
@@ -84,7 +82,7 @@ export default function SectionIntroduction() {
           ))}
         </ul>
         <p className="mt-4 font-mono text-[11px] uppercase tracking-widest2 text-subtle">
-          Exploration — not achievement claims.
+          Areas of exploration — not claims of achievement.
         </p>
       </div>
     </SectionShell>

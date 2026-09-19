@@ -6,8 +6,8 @@ export interface Idea {
 }
 
 export const ideas: readonly Idea[] = [
-  { id: 'robotic-bird', index: '01', title: 'Robotic Bird', status: 'IDEA' },
-  { id: 'smart-dustbin', index: '02', title: 'Smart Dustbin', status: 'IDEA' },
-  { id: 'calculator', index: '03', title: 'Calculator', status: 'IDEA' },
-  { id: 'weather-identifier', index: '04', title: 'Weather Identifier', status: 'IDEA' },
+  { id: 'bio-inspired-ornithopter', index: '01', title: 'Bio-Inspired Ornithopter', status: 'IDEA' },
+  { id: 'offline-crop-disease-detection', index: '02', title: 'Offline Crop-Disease Detection', status: 'IDEA' },
+  { id: 'river-water-level-early-warning', index: '03', title: 'River Water-Level Early Warning', status: 'IDEA' },
+  { id: 'orbital-mechanics-simulator', index: '04', title: 'Orbital Mechanics Simulator', status: 'IDEA' },
 ]

@@ -79,7 +79,7 @@ export default function SectionInfo() {
           <div className="space-y-3">
             <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border pb-3">
               <span className="font-mono text-[11px] uppercase tracking-widest2 text-subtle">
-                Archival Record // 01
+                Profile // 01
               </span>
               <TelemetryStrip />
             </div>
@@ -110,7 +110,7 @@ export default function SectionInfo() {
         {/* T2: Key-Value Specs (1x1) */}
         <Panel brackets spotlight className="p-5 md:col-span-1 md:row-span-1">
           <span className="font-mono text-[11px] uppercase tracking-widest2 text-subtle">
-            Vital Specs
+            Profile Details
           </span>
           <dl className="mt-4 space-y-2.5 font-mono text-xs">
             <div className="flex items-baseline justify-between border-b border-border/60 pb-1.5">
@@ -157,11 +157,11 @@ export default function SectionInfo() {
         {/* T4: Games (1x1) */}
         <Panel brackets spotlight className="p-5 md:col-span-1 md:row-span-1">
           <span className="font-mono text-[11px] uppercase tracking-widest2 text-subtle">
-            Simulations / Games
+            Fighting Games
           </span>
           <div className="mt-3 space-y-2">
             {personal.games.map((game, idx) => {
-              const glyphs = ['⟡', '◈', '❖']
+              const glyphs = ['⟡', '◈', '❖', '✦'] as const
               return (
                 <div
                   key={game}
@@ -180,7 +180,7 @@ export default function SectionInfo() {
         {/* T5: Likes (2x1) */}
         <Panel brackets spotlight className="p-5 md:col-span-2 md:row-span-1">
           <span className="font-mono text-[11px] uppercase tracking-widest2 text-subtle">
-            Resonances
+            Passions
           </span>
           <ul className="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-2 font-mono text-xs text-fg">
             {personal.likes.map((like) => (
@@ -195,7 +195,7 @@ export default function SectionInfo() {
         {/* T6: Dislikes (2x1, muted) */}
         <Panel brackets spotlight className="p-5 md:col-span-2 md:row-span-1">
           <span className="font-mono text-[11px] uppercase tracking-widest2 text-subtle">
-            Divergences
+            Principles
           </span>
           <ul className="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-2 font-mono text-xs text-muted">
             {personal.dislikes.map((dislike) => (

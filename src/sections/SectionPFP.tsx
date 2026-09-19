@@ -152,7 +152,7 @@ export default function SectionPFP() {
                     clearHoverTimer()
                     setFlipped(false)
                   }}
-                  aria-label="Show front capture"
+                  aria-label="Show front portrait"
                   aria-pressed={!flipped}
                   className="flex h-11 w-11 items-center justify-center rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
                 >
@@ -168,7 +168,7 @@ export default function SectionPFP() {
                     clearHoverTimer()
                     setFlipped(true)
                   }}
-                  aria-label="Show back capture"
+                  aria-label="Show back portrait"
                   aria-pressed={flipped}
                   className="flex h-11 w-11 items-center justify-center rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
                 >
@@ -204,7 +204,7 @@ export default function SectionPFP() {
                   <line x1="21" y1="3" x2="14" y2="10" />
                   <line x1="3" y1="21" x2="10" y2="14" />
                 </svg>
-                <span>Expand Capture</span>
+                <span>View full size</span>
               </button>
             ) : null}
 
@@ -224,18 +224,18 @@ export default function SectionPFP() {
             </div>
           </div>
 
-          {/* Contextual Archival Narrative */}
+          {/* Contextual Profile Narrative */}
           <div className="space-y-4">
             <div className="space-y-1">
               <span className="font-mono text-[11px] uppercase tracking-widest2 text-subtle">
-                Archival Record // Profile Disc
+                Profile // Portraits
               </span>
               <h3 className="text-xl font-medium tracking-tight text-fg">
                 Visual Identity
               </h3>
             </div>
             <p className="text-sm leading-relaxed text-muted text-pretty">
-              Concentric rotating 3D data coin reflecting verified personal captures. Click or hover to reveal the alternate capture; use the expand trigger to view in full resolution.
+              An interactive 3D profile disc presenting two portraits. Click or hover to reveal the alternate portrait; select View full size to open either in full resolution.
             </p>
           </div>
         </div>

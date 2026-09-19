@@ -1,6 +1,6 @@
 # LUMAS™ — Digital Identity
 
-A personal digital archive exploring AI, computing, science, systems, and
+A personal portfolio exploring AI, computing, science, systems, and
 experimental projects. Built as a static single-page application.
 
 ## Tech Stack
@@ -58,9 +58,9 @@ Cloudflare Pages, or any static host.
 
 ## Version 2.0 — Design Pivot & Architecture Upgrade
 
-LUMAS™ v2.0 elevates the visual identity to a cinematic, technical personal digital archive:
+LUMAS™ v2.0 elevates the visual identity to a cinematic, technical personal portfolio:
 - **Layered Charcoal Palette**: Refined dark theme (`#090A0F` base, `#0F1018` surface, `#12131A` elevated, `#181A22` overlay) with scientific-blue accent (`#4C8DFF`).
 - **Geist Typography**: Modern typographical foundation utilizing Geist Sans and Geist Mono via `@fontsource`.
-- **Bento Info Grid**: Section 01 redesigned as a responsive bento grid with live IST telemetry readout, SYSTEM ONLINE status indicator, vital specs, and Wikipedia-linked interests.
+- **Bento Info Grid**: Section 01 redesigned as a responsive bento grid with live IST telemetry readout, SYSTEM ONLINE status indicator, profile details, and Wikipedia-linked interests.
 - **3D Profile Data Coin**: Section 02 profile disc featuring a 22s rotating conic-gradient ring, dual-portrait 3D flip card, and dedicated expand trigger.
 - **Command Palette (`Cmd/Ctrl + K`)**: Accessible, keyboard-first modal enabling instant search and navigation across sections, projects, ideas, and Wikipedia topics with isolated navigation guards.

@@ -101,7 +101,7 @@ export default function SectionDigitalWorld() {
       {/* Ideas Grid */}
       <div>
         <p className="mb-4 font-mono text-[11px] uppercase tracking-widest2 text-subtle">
-          Ideas
+          Project concepts
         </p>
         <ul className="grid gap-3 sm:grid-cols-2">
           {ideas.map((idea) => (
@@ -126,14 +126,14 @@ export default function SectionDigitalWorld() {
         <div className="mb-6 border-b border-border pb-4">
           <div className="flex items-baseline justify-between">
             <h3 className="font-mono text-[11px] uppercase tracking-widest2 text-accent">
-              Connect & Communication
+              Get in touch
             </h3>
             <span className="font-mono text-[11px] uppercase tracking-widest2 text-subtle">
-              Verified Actions
+              Contact channels
             </span>
           </div>
           <p className="mt-2 text-sm text-muted">
-            Direct communication channels and public social repositories.
+            Reach me by email, phone or WhatsApp, or follow my work on public profiles.
           </p>
         </div>
 
@@ -172,7 +172,7 @@ export default function SectionDigitalWorld() {
         {/* Direct Contact Actions: Email, Phone, WhatsApp */}
         <div className="mt-8 border-t border-border pt-6 space-y-4">
           <p className="font-mono text-[11px] uppercase tracking-widest2 text-subtle">
-            Direct Contact Panel
+            Direct contact
           </p>
           <div className="grid gap-4 sm:grid-cols-3">
             {/* Email Action Card */}
@@ -196,7 +196,7 @@ export default function SectionDigitalWorld() {
                             : 'text-subtle hover:text-fg'
                         }`}
                       >
-                        {idx === 0 ? 'Primary' : 'Alt'}
+                        {e.id === 'email-primary' ? 'Primary' : e.id === 'email-college' ? 'College' : 'Alt'}
                       </button>
                     ))}
                   </div>
@@ -210,7 +210,7 @@ export default function SectionDigitalWorld() {
                 href={currentEmail.actionHref}
                 className="mt-4 inline-flex items-center justify-center gap-1.5 rounded border border-accent-dim/60 bg-accent/10 px-3 py-1.5 font-mono text-[11px] uppercase tracking-widest2 text-accent transition-all duration-200 hover:bg-accent/20 hover:scale-[1.02] active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
               >
-                <span>Launch Mail</span>
+                <span>Send email</span>
                 <ExternalLinkIcon className="h-3 w-3" />
               </a>
             </div>
@@ -250,7 +250,7 @@ export default function SectionDigitalWorld() {
                 href={currentPhone.actionHref}
                 className="mt-4 inline-flex items-center justify-center gap-1.5 rounded border border-border bg-surface px-3 py-1.5 font-mono text-[11px] uppercase tracking-widest2 text-fg transition-all duration-200 hover:border-accent-dim hover:text-accent hover:scale-[1.02] active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
               >
-                <span>Call Number</span>
+                <span>Call</span>
                 <PhoneIcon className="h-3 w-3" />
               </a>
             </div>
@@ -292,7 +292,7 @@ export default function SectionDigitalWorld() {
                 rel="noopener noreferrer"
                 className="mt-4 inline-flex items-center justify-center gap-1.5 rounded border border-accent-dim/60 bg-accent/10 px-3 py-1.5 font-mono text-[11px] uppercase tracking-widest2 text-accent transition-all duration-200 hover:bg-accent/20 hover:scale-[1.02] active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
               >
-                <span>Open Chat</span>
+                <span>Message on WhatsApp</span>
                 <WhatsAppIcon className="h-3 w-3" />
               </a>
             </div>

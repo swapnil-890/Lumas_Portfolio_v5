@@ -135,7 +135,7 @@ export default function App() {
 
       <footer className="border-t border-border px-4 py-8 sm:px-6 lg:px-10">
         <div className="mx-auto flex max-w-6xl flex-col items-start justify-between gap-4 font-mono text-[11px] uppercase tracking-widest2 text-subtle sm:flex-row sm:items-center">
-          <span>LUMAS™ · Personal digital archive</span>
+          <span>LUMAS™ · Personal portfolio</span>
           <div className="flex flex-wrap gap-x-4 gap-y-1">
             {socials
               .filter((s) => s.isPublic && s.isPrimary && s.url)
