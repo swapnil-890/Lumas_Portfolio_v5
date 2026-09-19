@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useState, type ComponentType } from 'react'
 import Navigation, { type NavSection } from './components/Navigation'
 import SectionIndicator from './components/SectionIndicator'
+import CommandPalette from './components/CommandPalette'
 import SectionInfo from './sections/SectionInfo'
 import SectionPFP from './sections/SectionPFP'
 import SectionWhoAmI from './sections/SectionWhoAmI'
@@ -34,6 +35,7 @@ export default function App() {
   }, [])
 
   const [activeIndex, setActiveIndex] = useState(0)
+  const [isPaletteOpen, setIsPaletteOpen] = useState(false)
 
   const go = useCallback(
     (i: number) => {
@@ -43,6 +45,11 @@ export default function App() {
     },
     [sections],
   )
+
+  const navigateSectionById = useCallback((sectionId: string) => {
+    const el = document.getElementById(sectionId)
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  }, [])
 
   // Track active section via IntersectionObserver.
   useEffect(() => {
@@ -66,9 +73,36 @@ export default function App() {
     return () => observer.disconnect()
   }, [sections])
 
-  // Keyboard navigation — guarded against typing fields.
+  // Global Cmd/Ctrl + K command palette listener
+  useEffect(() => {
+    const handleCmdK = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
+        const t = e.target as HTMLElement | null
+        if (
+          t &&
+          (t.tagName === 'INPUT' ||
+            t.tagName === 'TEXTAREA' ||
+            t.tagName === 'SELECT' ||
+            t.isContentEditable)
+        ) {
+          return
+        }
+        e.preventDefault()
+        setIsPaletteOpen((prev) => !prev)
+      }
+    }
+    window.addEventListener('keydown', handleCmdK)
+    return () => window.removeEventListener('keydown', handleCmdK)
+  }, [])
+
+  // Keyboard arrow navigation — strictly guarded against typing and open palette.
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
+      // Early-return if command palette is open
+      if (document.documentElement.getAttribute('data-palette-open') === 'true') {
+        return
+      }
+
       const t = e.target as HTMLElement | null
       if (
         t &&
@@ -133,6 +167,12 @@ export default function App() {
       </footer>
 
       <SectionIndicator current={activeIndex + 1} total={sections.length} />
+
+      <CommandPalette
+        isOpen={isPaletteOpen}
+        onClose={() => setIsPaletteOpen(false)}
+        onNavigateSection={navigateSectionById}
+      />
     </div>
   )
 }

@@ -60,6 +60,16 @@ recalculates to `01 / 05 … 05 / 05`.
 The build output in `dist/` is fully static. Deploy to Netlify, Vercel,
 Cloudflare Pages, or any static host.
 
+## Version 2.0 — Design Pivot & Architecture Upgrade
+
+LUMAS™ v2.0 elevates the visual identity to a cinematic, technical personal digital archive:
+- **Layered Charcoal Palette**: Refined dark theme (`#090A0F` base, `#0F1018` surface, `#12131A` elevated, `#181A22` overlay) with scientific-blue accent (`#4C8DFF`).
+- **Geist Typography**: Modern typographical foundation utilizing Geist Sans and Geist Mono via `@fontsource`.
+- **Bento Info Grid**: Section 01 redesigned as a responsive bento grid with live IST telemetry readout, SYSTEM ONLINE status indicator, vital specs, and Wikipedia-linked interests.
+- **Instagram-Style Profile Disc**: Section 02 profile disc featuring a 22s rotating conic-gradient ring, dual-portrait dot switcher, and zero-scale hover response.
+- **Command Palette (`Cmd/Ctrl + K`)**: Accessible, keyboard-first modal enabling instant search and navigation across sections, projects, ideas, and Wikipedia topics with isolated navigation guards.
+- **5-Slot Archive Reorganization**: Normalized 5-slot structure (`1st One`, `2nd One`, `3rd One`, `4th One`, `Childhood Crush`) with hardened neutral passphrase gate (`placeholder="Enter passphrase"`).
+
 ## Section 06 — Security Warning
 
 The private archive uses a **prototype, client-side passphrase gate**. This is

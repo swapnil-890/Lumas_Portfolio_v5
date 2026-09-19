@@ -12,14 +12,9 @@
     -webkit-text-size-adjust: 100%;
   }
 
-  @media (prefers-reduced-motion: reduce) {
-    html { scroll-behavior: auto; }
-    *, *::before, *::after {
-      animation-duration: 0.01ms !important;
-      animation-iteration-count: 1 !important;
-      transition-duration: 0.01ms !important;
-      scroll-behavior: auto !important;
-    }
+  #root {
+    position: relative;
+    z-index: 1;
   }
 
   body {
@@ -28,29 +23,62 @@
     overflow-x: hidden;
   }
 
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    background-image: radial-gradient(rgba(255, 255, 255, 0.025) 1px, transparent 1px);
+    background-size: 24px 24px;
+    mask-image: radial-gradient(ellipse at center, black 40%, transparent 80%);
+    -webkit-mask-image: radial-gradient(ellipse at center, black 40%, transparent 80%);
+  }
+
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.035;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
   ::selection {
     background: rgba(76, 141, 255, 0.28);
     color: #ffffff;
   }
 
   :focus-visible {
-    outline: 2px solid #4c8dff;
+    outline: 2px solid #4C8DFF;
     outline-offset: 3px;
     border-radius: 4px;
   }
 
-  /* Scrollbar (subtle, non-intrusive) */
+  /* Scrollbar */
   * {
     scrollbar-width: thin;
-    scrollbar-color: #1e1e24 transparent;
+    scrollbar-color: #1E2028 transparent;
   }
   *::-webkit-scrollbar { width: 8px; height: 8px; }
   *::-webkit-scrollbar-track { background: transparent; }
   *::-webkit-scrollbar-thumb {
-    background: #1e1e24;
+    background: #1E2028;
     border-radius: 8px;
   }
-  *::-webkit-scrollbar-thumb:hover { background: #2a2a32; }
+  *::-webkit-scrollbar-thumb:hover { background: #2A2E3A; }
+
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 150ms !important;
+      scroll-behavior: auto !important;
+      transform: none !important;
+    }
+  }
 }
 
 @layer utilities {

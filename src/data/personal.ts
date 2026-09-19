@@ -1,6 +1,11 @@
-export interface InterestItem {
+export interface Interest {
   readonly label: string
-  readonly url: string
+  readonly wiki: string
+}
+
+export interface ProfileImage {
+  readonly src: string
+  readonly alt: string
 }
 
 export interface ContactChannel {
@@ -23,16 +28,15 @@ export interface PersonalData {
   readonly mindset: string
   /**
    * Profile images placed in /public/images/pfp/.
-   * E.g. ['/images/pfp/main-01.jpg', '/images/pfp/main-06.jpg']
-   * If empty or null, renders 'AWAITING INPUT' disc placeholder.
+   * If empty, renders 'AWAITING INPUT' disc placeholder.
    */
-  readonly pfpImages: readonly string[]
+  readonly profileImages: readonly ProfileImage[]
   readonly contact: {
     readonly emails: readonly ContactChannel[]
     readonly phones: readonly ContactChannel[]
     readonly whatsapps: readonly ContactChannel[]
   }
-  readonly interests: readonly InterestItem[]
+  readonly interests: readonly Interest[]
   readonly likes: readonly string[]
   readonly games: readonly string[]
   readonly dislikes: readonly string[]
@@ -67,7 +71,10 @@ export const personal: PersonalData = {
   timezone: 'IST (UTC+5:30)',
   role: 'AI & Data Science Student',
   mindset: 'Focused on understanding systems deeply rather than blindly copying tutorials.',
-  pfpImages: ['/images/pfp/main-01.jpg', '/images/pfp/main-06.jpg'],
+  profileImages: [
+    { src: '/images/pfp/main-01.jpg', alt: 'Lumas — profile image 1' },
+    { src: '/images/pfp/main-02.jpg', alt: 'Lumas — profile image 2' },
+  ],
   contact: {
     emails: [
       {
@@ -127,43 +134,43 @@ export const personal: PersonalData = {
   interests: [
     {
       label: 'Artificial Intelligence',
-      url: 'https://en.wikipedia.org/wiki/Artificial_intelligence',
+      wiki: 'https://en.wikipedia.org/wiki/Artificial_intelligence',
     },
     {
       label: 'Machine Learning',
-      url: 'https://en.wikipedia.org/wiki/Machine_learning',
+      wiki: 'https://en.wikipedia.org/wiki/Machine_learning',
     },
     {
       label: 'Data Science',
-      url: 'https://en.wikipedia.org/wiki/Data_science',
+      wiki: 'https://en.wikipedia.org/wiki/Data_science',
     },
     {
       label: 'Programming',
-      url: 'https://en.wikipedia.org/wiki/Computer_programming',
+      wiki: 'https://en.wikipedia.org/wiki/Computer_programming',
     },
     {
       label: 'Scientific Computing',
-      url: 'https://en.wikipedia.org/wiki/Computational_science',
+      wiki: 'https://en.wikipedia.org/wiki/Computational_science',
     },
     {
       label: 'Linux',
-      url: 'https://en.wikipedia.org/wiki/Linux',
+      wiki: 'https://en.wikipedia.org/wiki/Linux',
     },
     {
       label: 'Robotics',
-      url: 'https://en.wikipedia.org/wiki/Robotics',
+      wiki: 'https://en.wikipedia.org/wiki/Robotics',
     },
     {
       label: 'Aerospace',
-      url: 'https://en.wikipedia.org/wiki/Aerospace',
+      wiki: 'https://en.wikipedia.org/wiki/Aerospace',
     },
     {
       label: 'Quantum Physics',
-      url: 'https://en.wikipedia.org/wiki/Quantum_mechanics',
+      wiki: 'https://en.wikipedia.org/wiki/Quantum_mechanics',
     },
     {
       label: 'Cosmology',
-      url: 'https://en.wikipedia.org/wiki/Physical_cosmology',
+      wiki: 'https://en.wikipedia.org/wiki/Physical_cosmology',
     },
   ],
   likes: [

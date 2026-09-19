@@ -1,74 +1,52 @@
-import { useEffect, useRef, useCallback } from 'react'
+import { useEffect, useRef, type RefObject } from 'react'
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion'
-import { CloseIcon, ChevronLeftIcon, ChevronRightIcon } from './Icons'
+import { CloseIcon } from './Icons'
 
-export interface LightboxImage {
+export interface LightboxProps {
+  open: boolean
   src: string
   alt: string
-  title?: string
-}
-
-interface LightboxProps {
-  isOpen: boolean
-  images: readonly LightboxImage[]
-  currentIndex: number
   onClose: () => void
-  onNavigate?: (newIndex: number) => void
-  triggerRef?: React.RefObject<HTMLElement | null>
+  returnFocusTo?: RefObject<HTMLElement | null>
 }
 
 export default function Lightbox({
-  isOpen,
-  images,
-  currentIndex,
+  open,
+  src,
+  alt,
   onClose,
-  onNavigate,
-  triggerRef,
+  returnFocusTo,
 }: LightboxProps) {
   const reduce = useReducedMotion()
   const modalRef = useRef<HTMLDivElement>(null)
   const closeBtnRef = useRef<HTMLButtonElement>(null)
-  const lastActiveElRef = useRef<HTMLElement | null>(null)
+  const previousActiveElement = useRef<HTMLElement | null>(null)
 
-  const activeImage = images[currentIndex]
-  const hasMultiple = images.length > 1
-
-  // Handle previous focus restoration and body scroll lock
+  // Manage body scroll lock and focus restoration
   useEffect(() => {
-    if (isOpen) {
-      lastActiveElRef.current = (triggerRef?.current ?? document.activeElement) as HTMLElement | null
+    if (open) {
+      previousActiveElement.current =
+        returnFocusTo?.current ?? (document.activeElement as HTMLElement | null)
       const originalOverflow = document.body.style.overflow
       document.body.style.overflow = 'hidden'
 
-      // Focus close button on open
-      setTimeout(() => {
+      // Focus close button on mount
+      requestAnimationFrame(() => {
         closeBtnRef.current?.focus()
-      }, 50)
+      })
 
       return () => {
         document.body.style.overflow = originalOverflow
-        if (lastActiveElRef.current && typeof lastActiveElRef.current.focus === 'function') {
-          lastActiveElRef.current.focus()
+        if (previousActiveElement.current && typeof previousActiveElement.current.focus === 'function') {
+          previousActiveElement.current.focus()
         }
       }
     }
-  }, [isOpen, triggerRef])
+  }, [open, returnFocusTo])
 
-  const goPrev = useCallback(() => {
-    if (hasMultiple && onNavigate) {
-      onNavigate((currentIndex - 1 + images.length) % images.length)
-    }
-  }, [currentIndex, hasMultiple, images.length, onNavigate])
-
-  const goNext = useCallback(() => {
-    if (hasMultiple && onNavigate) {
-      onNavigate((currentIndex + 1) % images.length)
-    }
-  }, [currentIndex, hasMultiple, images.length, onNavigate])
-
-  // Keyboard navigation & Focus trap
+  // Key listener & focus trap
   useEffect(() => {
-    if (!isOpen) return
+    if (!open) return
 
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
@@ -77,26 +55,11 @@ export default function Lightbox({
         return
       }
 
-      if (hasMultiple) {
-        if (e.key === 'ArrowLeft') {
-          e.preventDefault()
-          goPrev()
-          return
-        }
-        if (e.key === 'ArrowRight') {
-          e.preventDefault()
-          goNext()
-          return
-        }
-      }
-
-      // Focus trap
       if (e.key === 'Tab' && modalRef.current) {
         const focusable = modalRef.current.querySelectorAll<HTMLElement>(
           'button:not([disabled]), [tabindex]:not([tabindex="-1"])'
         )
         if (focusable.length === 0) return
-
         const first = focusable[0]
         const last = focusable[focusable.length - 1]
 
@@ -116,83 +79,59 @@ export default function Lightbox({
 
     window.addEventListener('keydown', handleKeyDown)
     return () => window.removeEventListener('keydown', handleKeyDown)
-  }, [isOpen, hasMultiple, goPrev, goNext, onClose])
+  }, [open, onClose])
 
   return (
     <AnimatePresence>
-      {isOpen && activeImage ? (
+      {open && src ? (
         <div
+          ref={modalRef}
           role="dialog"
           aria-modal="true"
-          aria-label={activeImage.title ?? activeImage.alt}
+          aria-labelledby="lightbox-title"
           className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6"
-          ref={modalRef}
         >
-          {/* Backdrop */}
+          {/* Visually-hidden accessible dialog title */}
+          <h2 id="lightbox-title" className="sr-only">
+            {alt || 'Image lightbox'}
+          </h2>
+
+          {/* Backdrop: rgba(9,10,15,0.94) + backdrop-blur 8px */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: reduce ? 0.01 : 0.2 }}
+            transition={{ duration: 0.2 }}
             onClick={onClose}
             aria-hidden="true"
-            className="absolute inset-0 bg-black/90 backdrop-blur-sm"
+            className="absolute inset-0 bg-[#090A0F]/94 backdrop-blur-[8px]"
           />
 
           {/* Close button */}
           <button
-            type="button"
             ref={closeBtnRef}
+            type="button"
             onClick={onClose}
-            aria-label="Close image lightbox"
-            className="absolute top-4 right-4 z-50 flex h-10 w-10 items-center justify-center rounded-full border border-border bg-surface/80 text-fg hover:bg-elevated hover:text-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent transition-colors"
+            aria-label="Close image"
+            className="absolute top-4 right-4 z-50 flex h-10 w-10 items-center justify-center rounded-md border border-border bg-surface text-fg hover:border-border-hi hover:bg-elevated focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent transition-colors"
           >
             <CloseIcon className="h-5 w-5" />
           </button>
 
-          {/* Previous / Next buttons */}
-          {hasMultiple ? (
-            <>
-              <button
-                type="button"
-                onClick={goPrev}
-                aria-label="Previous image"
-                className="absolute left-4 top-1/2 z-50 -translate-y-1/2 flex h-10 w-10 items-center justify-center rounded-full border border-border bg-surface/80 text-fg hover:bg-elevated hover:text-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent transition-colors"
-              >
-                <ChevronLeftIcon className="h-5 w-5" />
-              </button>
-
-              <button
-                type="button"
-                onClick={goNext}
-                aria-label="Next image"
-                className="absolute right-4 top-1/2 z-50 -translate-y-1/2 flex h-10 w-10 items-center justify-center rounded-full border border-border bg-surface/80 text-fg hover:bg-elevated hover:text-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent transition-colors"
-              >
-                <ChevronRightIcon className="h-5 w-5" />
-              </button>
-            </>
-          ) : null}
-
-          {/* Image & Caption Container */}
+          {/* Centered Image: max 90vw / 90vh, object-fit: contain, rounded-md, 1px border */}
           <motion.div
-            initial={reduce ? false : { opacity: 0, scale: 0.95 }}
-            animate={reduce ? undefined : { opacity: 1, scale: 1 }}
-            exit={reduce ? undefined : { opacity: 0, scale: 0.95 }}
-            transition={{ duration: reduce ? 0.01 : 0.25 }}
-            className="relative z-10 flex max-h-[90vh] max-w-[90vw] flex-col items-center justify-center"
+            initial={reduce ? { opacity: 0 } : { opacity: 0, scale: 0.98 }}
+            animate={reduce ? { opacity: 1 } : { opacity: 1, scale: 1 }}
+            exit={reduce ? { opacity: 0 } : { opacity: 0, scale: 0.98 }}
+            transition={{ duration: 0.2 }}
+            className="relative z-10 flex max-h-[90vh] max-w-[90vw] items-center justify-center"
             onClick={(e) => e.stopPropagation()}
           >
             <img
-              src={activeImage.src}
-              alt={activeImage.alt}
-              className="max-h-[82vh] max-w-[90vw] rounded-lg border border-border object-contain shadow-2xl"
+              src={src}
+              alt={alt}
+              className="max-h-[90vh] max-w-[90vw] rounded-md border border-border object-contain shadow-2xl"
             />
-            {activeImage.title ? (
-              <p className="mt-3 text-center font-mono text-[11px] tracking-widest2 text-muted uppercase">
-                {activeImage.title}
-                {hasMultiple ? ` (${currentIndex + 1} / ${images.length})` : ''}
-              </p>
-            ) : null}
           </motion.div>
         </div>
       ) : null}

@@ -8,6 +8,7 @@ Section 06 ("Something Special") includes a prototype client-side authentication
 
 1. **Client-Side Gate Only**:
    - The passphrase check `REDACTED` is executed entirely in browser JavaScript.
+   - The passphrase "REDACTED" is also public by design.
    - Client-side checks are cosmetic interaction demos, NOT a cryptographic control. Anyone inspecting network traffic or source bundles can view client code.
 
 2. **Public Static Asset Serving**:
