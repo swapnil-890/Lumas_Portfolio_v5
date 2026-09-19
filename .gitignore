@@ -6,7 +6,3 @@ dist-ssr
 .vscode/*
 !.vscode/extensions.json
 .idea
-
-# Exclude secret archive assets by default
-public/images/archive/*
-!public/images/archive/.gitkeep
