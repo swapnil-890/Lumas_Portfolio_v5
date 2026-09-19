@@ -2,6 +2,22 @@ import SectionShell from '../components/SectionShell'
 import StatusBadge from '../components/StatusBadge'
 import { personal } from '../data/personal'
 
+const HANDS_ON_ITEMS = [
+  'Linux environments',
+  'GPU / CUDA troubleshooting',
+  'Local AI tooling',
+  'Android development',
+  'Backend / API experimentation',
+] as const
+
+const VERBS = ['init', 'start', 'run'] as const
+
+const slug = (s: string): string =>
+  s.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '')
+
+const toCommand = (item: string, index: number): string =>
+  `${VERBS[index % VERBS.length]} ${slug(item)}`
+
 export default function SectionIntroduction() {
   return (
     <SectionShell id="introduction" number="04" eyebrow="Introduction" title="Focus & environment">
@@ -37,16 +53,35 @@ export default function SectionIntroduction() {
         <TokenList label="Technical ecosystem" items={personal.ecosystem} />
       </div>
 
+      {/* decorative — hands-on exploration CLI log; nothing is executed */}
       <div className="rounded-lg border border-border bg-surface p-5 sm:p-6">
-        <p className="mb-3 font-mono text-[11px] uppercase tracking-widest2 text-subtle">
+        <p
+          id="hands-on-heading"
+          className="mb-3 font-mono text-[11px] uppercase tracking-widest2 text-subtle"
+        >
           Hands-on exploration
         </p>
-        <ul className="grid gap-2 text-sm text-muted sm:grid-cols-2">
-          <li>· Linux environments</li>
-          <li>· GPU / CUDA troubleshooting</li>
-          <li>· Local AI tooling</li>
-          <li>· Android development</li>
-          <li>· Backend / API experimentation</li>
+        <ul
+          aria-labelledby="hands-on-heading"
+          className="space-y-2 rounded-md border border-border bg-elevated/70 p-3.5 font-mono text-xs leading-relaxed"
+        >
+          {HANDS_ON_ITEMS.map((item, idx) => (
+            <li
+              key={item}
+              className="whitespace-pre-wrap break-all sm:break-words text-fg"
+            >
+              <span className="sr-only">{item}</span>
+              <span
+                className="select-none text-subtle mr-2"
+                aria-hidden="true"
+              >
+                [lumas@local ~]$
+              </span>
+              <span aria-hidden="true" className="text-fg">
+                {toCommand(item, idx)}
+              </span>
+            </li>
+          ))}
         </ul>
         <p className="mt-4 font-mono text-[11px] uppercase tracking-widest2 text-subtle">
           Exploration — not achievement claims.

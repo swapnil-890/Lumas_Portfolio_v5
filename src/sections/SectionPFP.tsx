@@ -207,6 +207,21 @@ export default function SectionPFP() {
                 <span>Expand Capture</span>
               </button>
             ) : null}
+
+            {/* decorative — nothing is executed */}
+            <div
+              className="mt-3 w-full max-w-[240px] rounded border border-border bg-elevated/70 p-2 text-left font-mono text-[11px] leading-relaxed"
+              aria-hidden="true"
+            >
+              <pre className="whitespace-pre-wrap break-words font-mono text-[11px]">
+                <code>
+                  <span className="text-subtle">&gt; </span>
+                  <span className="text-accent">./render_profile.sh --compile-ai</span>
+                  {'\n'}
+                  <span className="text-subtle">&gt;&gt; STATUS: 200 OK</span>
+                </code>
+              </pre>
+            </div>
           </div>
 
           {/* Contextual Archival Narrative */}

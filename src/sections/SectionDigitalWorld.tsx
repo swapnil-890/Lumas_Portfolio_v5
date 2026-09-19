@@ -2,7 +2,13 @@ import { useState } from 'react'
 import SectionShell from '../components/SectionShell'
 import StatusBadge from '../components/StatusBadge'
 import { projects } from '../data/projects'
+import type { ProjectStatus } from '../data/projects'
 import { ideas } from '../data/ideas'
+
+// Deviation D1: blueprint literal -> composite status string; approved by user.
+const PULSING_STATUSES: ReadonlySet<ProjectStatus> = new Set<ProjectStatus>([
+  'BUILDING / EXPERIMENTAL',
+])
 import { socials } from '../data/socials'
 import { personal } from '../data/personal'
 import {
@@ -48,7 +54,15 @@ export default function SectionDigitalWorld() {
                   {p.category}
                 </p>
               </div>
-              <StatusBadge label={p.status} tone="accent" />
+              <div className="inline-flex items-center gap-2">
+                {PULSING_STATUSES.has(p.status) ? (
+                  <span
+                    className="h-1.5 w-1.5 rounded-full bg-accent ring-4 ring-accent/30 motion-safe:animate-pulse motion-reduce:animate-none"
+                    aria-hidden="true"
+                  />
+                ) : null}
+                <StatusBadge label={p.status} tone="accent" />
+              </div>
             </div>
 
             <p className="text-sm leading-relaxed text-muted text-pretty">

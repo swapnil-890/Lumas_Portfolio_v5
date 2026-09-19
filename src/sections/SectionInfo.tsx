@@ -4,28 +4,69 @@ import SectionShell from '../components/SectionShell'
 import Panel from '../components/Panel'
 import { personal } from '../data/personal'
 
-export default function SectionInfo() {
+const IST_FORMAT = new Intl.DateTimeFormat('en-GB', {
+  timeZone: 'Asia/Kolkata',
+  hourCycle: 'h23',
+  hour: '2-digit',
+  minute: '2-digit',
+  second: '2-digit',
+})
+
+function isReducedMotion(): boolean {
+  if (typeof window === 'undefined' || typeof window.matchMedia !== 'function') return false
+  return window.matchMedia('(prefers-reduced-motion: reduce)').matches
+}
+
+function IstClock() {
   const reduce = useReducedMotion()
-  const [istTime, setIstTime] = useState('')
+  const [time, setTime] = useState<string>(() => IST_FORMAT.format(new Date()))
 
   useEffect(() => {
-    const updateTime = () => {
-      const now = new Date()
-      // Format time in IST (UTC+5:30)
-      const options: Intl.DateTimeFormatOptions = {
-        timeZone: 'Asia/Kolkata',
-        hour: '2-digit',
-        minute: '2-digit',
-        second: '2-digit',
-        hour12: false,
+    // Skipped when reduced motion is active (time frozen at page-load value)
+    if (reduce || isReducedMotion()) return
+    const timer = setInterval(() => {
+      if (!document.hidden && !isReducedMotion()) {
+        setTime(IST_FORMAT.format(new Date()))
       }
-      setIstTime(now.toLocaleTimeString('en-GB', options))
-    }
-    updateTime()
-    const timer = setInterval(updateTime, 1000)
+    }, 1000)
     return () => clearInterval(timer)
-  }, [])
+  }, [reduce])
 
+  return <span className="inline-block font-mono tabular-nums">{time}</span>
+}
+
+function TelemetryStrip() {
+  const reduce = useReducedMotion()
+
+  return (
+    <div className="flex flex-col items-start gap-1.5 sm:items-end">
+      <span className="inline-flex items-center gap-2 font-mono text-[11px] uppercase tracking-widest2 text-accent">
+        <span
+          className={`h-2 w-2 rounded-full bg-accent ${
+            reduce ? '' : 'animate-pulse'
+          }`}
+          aria-hidden="true"
+        />
+        <span>SYSTEM ONLINE</span>
+      </span>
+      {/* decorative — not real telemetry */}
+      <div
+        className="flex flex-wrap items-center gap-1 font-mono text-[10px] tracking-wide text-subtle"
+        aria-hidden="true"
+      >
+        <span className="whitespace-nowrap">[SYS_LOAD: OPTIMAL]</span>
+        <span className="text-border">|</span>
+        <span className="whitespace-nowrap">[MODEL_V: 1.0.4]</span>
+        <span className="text-border">|</span>
+        <span className="whitespace-nowrap text-accent">
+          [IST: <IstClock />]
+        </span>
+      </div>
+    </div>
+  )
+}
+
+export default function SectionInfo() {
   return (
     <SectionShell id="info" number="01" eyebrow="Overview" title="Identity & Record">
       <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
@@ -36,19 +77,11 @@ export default function SectionInfo() {
           className="p-6 md:col-span-2 md:row-span-2 flex flex-col justify-between"
         >
           <div className="space-y-3">
-            <div className="flex items-center justify-between border-b border-border pb-3">
+            <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border pb-3">
               <span className="font-mono text-[11px] uppercase tracking-widest2 text-subtle">
                 Archival Record // 01
               </span>
-              <span className="inline-flex items-center gap-2 font-mono text-[11px] uppercase tracking-widest2 text-accent">
-                <span
-                  className={`h-2 w-2 rounded-full bg-accent ${
-                    reduce ? '' : 'animate-pulse'
-                  }`}
-                  aria-hidden="true"
-                />
-                <span>SYSTEM ONLINE</span>
-              </span>
+              <TelemetryStrip />
             </div>
 
             <div className="pt-2">
@@ -67,7 +100,10 @@ export default function SectionInfo() {
 
           <div className="mt-8 rounded-md border border-border bg-elevated/80 p-3.5 font-mono text-[11px] uppercase tracking-widest2 text-subtle flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
             <span>TELEMETRY · IST (UTC+5:30)</span>
-            <span className="text-fg font-mono text-xs">{istTime ? `${istTime} IST` : 'SYNCING...'}</span>
+            <span className="text-fg font-mono text-xs flex items-center gap-1.5">
+              <span>LOCAL RUNTIME</span>
+              <span className="text-accent font-mono text-[10px]">[CSR-STATIC]</span>
+            </span>
           </div>
         </Panel>
 
