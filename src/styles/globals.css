@@ -156,6 +156,8 @@
   z-index: 10;
   width: calc(100% - 16px);
   height: calc(100% - 16px);
+  min-width: 180px;
+  min-height: 180px;
   border-radius: 50%;
   perspective: 1000px;
   -webkit-perspective: 1000px;

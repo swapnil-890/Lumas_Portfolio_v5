@@ -58,7 +58,7 @@ export default function SectionPFP() {
           {/* Concentric Rotating Disc / 3D Data Coin Container */}
           <div className="flex flex-col items-center justify-center">
             {count >= 2 ? (
-              <div className="coin-stage h-48 w-48 min-h-[180px] min-w-[180px] sm:h-56 sm:w-56">
+              <div className="coin-stage h-52 w-52 min-h-[196px] min-w-[196px] sm:h-56 sm:w-56">
                 <div className="coin-glow" aria-hidden="true" />
                 <div className="coin-ring" aria-hidden="true">
                   <div className="coin-ring-inner" />
@@ -107,12 +107,12 @@ export default function SectionPFP() {
                 <div className="coin-scan" aria-hidden="true" />
               </div>
             ) : count === 1 ? (
-              <div className="coin-stage h-48 w-48 min-h-[180px] min-w-[180px] sm:h-56 sm:w-56">
+              <div className="coin-stage h-52 w-52 min-h-[196px] min-w-[196px] sm:h-56 sm:w-56">
                 <div className="coin-glow" aria-hidden="true" />
                 <div className="coin-ring" aria-hidden="true">
                   <div className="coin-ring-inner" />
                 </div>
-                <div className="relative z-10 flex h-[calc(100%-16px)] w-[calc(100%-16px)] items-center justify-center overflow-hidden rounded-full border border-border bg-elevated">
+                <div className="relative z-10 flex h-[calc(100%-16px)] w-[calc(100%-16px)] min-h-[180px] min-w-[180px] items-center justify-center overflow-hidden rounded-full border border-border bg-elevated">
                   <img
                     src={profileImages[0].src}
                     alt={profileImages[0].alt}
@@ -124,13 +124,13 @@ export default function SectionPFP() {
                 <div className="coin-scan" aria-hidden="true" />
               </div>
             ) : (
-              <div className="coin-stage h-48 w-48 min-h-[180px] min-w-[180px] sm:h-56 sm:w-56">
+              <div className="coin-stage h-52 w-52 min-h-[196px] min-w-[196px] sm:h-56 sm:w-56">
                 <div className="coin-glow" aria-hidden="true" />
                 <div className="coin-ring" aria-hidden="true">
                   <div className="coin-ring-inner" />
                 </div>
                 <div
-                  className="relative z-10 flex h-[calc(100%-16px)] w-[calc(100%-16px)] items-center justify-center overflow-hidden rounded-full border border-border bg-elevated"
+                  className="relative z-10 flex h-[calc(100%-16px)] w-[calc(100%-16px)] min-h-[180px] min-w-[180px] items-center justify-center overflow-hidden rounded-full border border-border bg-elevated"
                   aria-label="Profile image awaiting input"
                 >
                   <div className="flex h-full w-full flex-col items-center justify-center p-4 text-center">
@@ -222,15 +222,6 @@ export default function SectionPFP() {
             <p className="text-sm leading-relaxed text-muted text-pretty">
               Concentric rotating 3D data coin reflecting verified personal captures. Click or hover to reveal the alternate capture; use the expand trigger to view in full resolution.
             </p>
-            <div className="flex flex-wrap gap-2 pt-2">
-              <span className="inline-flex items-center gap-1.5 rounded border border-border bg-surface px-2.5 py-1 font-mono text-[11px] uppercase tracking-widest2 text-subtle">
-                <span className="h-1.5 w-1.5 rounded-full bg-accent" />
-                Dual Capture
-              </span>
-              <span className="inline-flex items-center gap-1.5 rounded border border-border bg-surface px-2.5 py-1 font-mono text-[11px] uppercase tracking-widest2 text-subtle">
-                3D Perspective
-              </span>
-            </div>
           </div>
         </div>
       </Panel>
