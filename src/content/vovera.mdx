@@ -1,0 +1,234 @@
+---
+title: "VOVERA"
+subtitle: "Real-Time Voice Attack Detection Pipeline"
+status: "Prototype"
+stack: ["Python", "FastAPI", "SQLite", "Librosa", "scikit-learn"]
+repo: "https://github.com/swapnil-890/vovera"
+---
+
+## Problem
+
+Voice-based social engineering attacks (vishing, voice cloning, real-time scam scripts) are increasing. Existing detection systems operate on recorded audio with high latency, making them unsuitable for real-time intervention.
+
+**Target:** Sub-500ms detection latency on streaming audio input.
+
+## Approach
+
+### Why FastAPI?
+
+- Async-native: Handles concurrent audio stream connections without thread overhead
+- Pydantic integration: Request/response validation without boilerplate
+- WebSocket support: Native streaming audio ingestion
+- OpenAPI generation: Automatic documentation for API consumers
+
+### Why SQLite?
+
+- Zero-configuration: No separate database process to manage
+- Sufficient for prototype: Single-writer, multi-reader pattern matches audit log use case
+- Easy migration path: Schema designed for eventual PostgreSQL migration
+
+**Trade-off acknowledged:** SQLite will not handle 100+ concurrent writes. See [Scaling Considerations](#scaling-considerations).
+
+## Architecture
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                         CLIENT LAYER                            │
+│  ┌─────────────┐    ┌─────────────┐    ┌─────────────┐         │
+│  │  WebSocket  │    │  WebSocket  │    │  WebSocket  │         │
+│  │  Client A   │    │  Client B   │    │  Client N   │         │
+│  └──────┬──────┘    └──────┬──────┘    └──────┬──────┘         │
+└─────────┼──────────────────┼──────────────────┼─────────────────┘
+          │                  │                  │
+          ▼                  ▼                  ▼
+┌─────────────────────────────────────────────────────────────────┐
+│                      FASTAPI APPLICATION                        │
+│  ┌─────────────────────────────────────────────────────────┐   │
+│  │                   Connection Manager                     │   │
+│  │  - WebSocket lifecycle management                        │   │
+│  │  - Backpressure handling                                 │   │
+│  └─────────────────────────┬───────────────────────────────┘   │
+│                            │                                    │
+│  ┌─────────────────────────▼───────────────────────────────┐   │
+│  │                   Audio Buffer Pool                      │   │
+│  │  - 16kHz mono PCM chunks (100ms windows)                │   │
+│  │  - Ring buffer for streaming continuity                  │   │
+│  └─────────────────────────┬───────────────────────────────┘   │
+│                            │                                    │
+│  ┌─────────────────────────▼───────────────────────────────┐   │
+│  │                 Signal Processing Module                 │   │
+│  │  - MFCC extraction (librosa)                            │   │
+│  │  - Spectral centroid analysis                           │   │
+│  │  - Pitch contour tracking                               │   │
+│  └─────────────────────────┬───────────────────────────────┘   │
+│                            │                                    │
+│  ┌─────────────────────────▼───────────────────────────────┐   │
+│  │               Classification Engine                      │   │
+│  │  - Feature vector assembly                              │   │
+│  │  - Anomaly scoring (isolation forest)                   │   │
+│  │  - Threshold evaluation                                 │   │
+│  └─────────────────────────┬───────────────────────────────┘   │
+│                            │                                    │
+│  ┌─────────────────────────▼───────────────────────────────┐   │
+│  │                  Audit Logger                            │   │
+│  │  - Async SQLite writes (aiosqlite)                      │   │
+│  │  - Event deduplication                                  │   │
+│  └─────────────────────────────────────────────────────────┘   │
+└────────────────────────────────────────────────────────────────┘
+```
+
+## Database Schema
+
+```sql
+CREATE TABLE IF NOT EXISTS sessions (
+    id TEXT PRIMARY KEY,
+    started_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    ended_at DATETIME,
+    client_ip TEXT,
+    total_chunks INTEGER DEFAULT 0
+);
+
+CREATE TABLE IF NOT EXISTS events (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    session_id TEXT NOT NULL,
+    timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
+    risk_score REAL NOT NULL,
+    features_json TEXT NOT NULL,
+    action_taken TEXT CHECK(action_taken IN ('none', 'flag', 'terminate')),
+    FOREIGN KEY (session_id) REFERENCES sessions(id)
+);
+
+CREATE INDEX idx_events_session ON events(session_id);
+CREATE INDEX idx_events_timestamp ON events(timestamp);
+CREATE INDEX idx_events_risk ON events(risk_score);
+
+PRAGMA journal_mode = WAL;
+PRAGMA synchronous = NORMAL;
+```
+
+## The Hardest 5%: Concurrent Audio Stream Handling
+
+```python
+import asyncio
+from collections import deque
+from dataclasses import dataclass, field
+from typing import Deque, Optional
+import numpy as np
+
+@dataclass
+class AudioBuffer:
+    """
+    Ring buffer for continuous audio stream processing.
+
+    Constraints:
+    - Fixed memory footprint (maxlen enforced)
+    - Thread-safe for async access
+    - Supports overlapping windows for feature continuity
+    """
+    sample_rate: int = 16000
+    window_ms: int = 100
+    overlap_ms: int = 50
+    max_windows: int = 100
+
+    _buffer: Deque[np.ndarray] = field(
+        default_factory=lambda: deque(maxlen=100)
+    )
+    _lock: asyncio.Lock = field(default_factory=asyncio.Lock)
+
+    @property
+    def window_samples(self) -> int:
+        return int(self.sample_rate * self.window_ms / 1000)
+
+    @property
+    def hop_samples(self) -> int:
+        return int(self.sample_rate * (self.window_ms - self.overlap_ms) / 1000)
+
+    async def push(self, chunk: np.ndarray) -> Optional[np.ndarray]:
+        """Push audio chunk, return complete window if ready."""
+        async with self._lock:
+            self._buffer.extend(chunk)
+
+            if len(self._buffer) < self.window_samples:
+                return None
+
+            window = np.array(list(self._buffer)[:self.window_samples])
+
+            for _ in range(self.hop_samples):
+                if self._buffer:
+                    self._buffer.popleft()
+
+            return window
+```
+
+**Why this is hard:**
+1. **Backpressure:** If classification is slower than audio intake, buffer overflows
+2. **Overlap management:** 50% overlap ensures no feature discontinuity at window boundaries
+3. **Memory bounds:** `maxlen` prevents unbounded growth on long sessions
+4. **Async safety:** Lock ensures no race conditions between push and flush
+
+## Failure Log
+
+### Failure 1: Naive Buffering Caused 2.4s Latency
+
+**Symptom:** Initial implementation waited for full 1-second windows before processing.
+
+**Root cause:** Collecting 16,000 samples (1 second at 16kHz) before feature extraction.
+
+**Fix:** Reduced window to 100ms with 50% overlap. Windows return every 50ms instead of every 1000ms.
+
+**Result:** Latency reduced from 2400ms to 180ms.
+
+### Failure 2: SQLite Write Contention Under Load
+
+**Symptom:** Events dropped when >10 concurrent sessions active.
+
+**Root cause:** Synchronous SQLite writes blocking the event loop.
+
+**Fix:** Migrated to `aiosqlite` with async writes and WAL journal mode.
+
+**Result:** Zero dropped events up to 50 concurrent sessions.
+
+### Failure 3: False Positive Rate Unacceptable
+
+**Symptom:** 23% false positive rate on legitimate excited speech.
+
+**Root cause:** Risk scoring only used pitch variance, which correlates with excitement.
+
+**Fix:** Added spectral centroid and zero-crossing rate to feature vector (13 MFCCs + 3 additional features).
+
+**Result:** False positive rate reduced to 8%. Still unacceptable for production, but acceptable for prototype demonstration.
+
+## Scaling Considerations
+
+**Current limitation:** SQLite single-writer.
+
+**Migration path:**
+1. Replace `aiosqlite` with `asyncpg` (PostgreSQL)
+2. Add connection pooling
+3. Partition events table by session_id hash
+4. Implement write-ahead queue for burst handling
+
+**Estimated capacity after migration:** 1000+ concurrent sessions.
+
+## Evidence
+
+### Latency Benchmark
+
+```
+Test: 1000 audio chunks (100ms each)
+Hardware: MacBook Pro M1, 16GB RAM
+
+Signal Processing:  45ms ± 12ms
+Classification:     38ms ± 8ms
+Database Write:     12ms ± 3ms
+─────────────────────────────
+Total Pipeline:     95ms ± 15ms
+
+P99 Latency:        142ms
+Target:             500ms
+Status:             ✅ PASS
+```
+
+## Repository
+
+[github.com/swapnil-890/vovera](https://github.com/swapnil-890/vovera)

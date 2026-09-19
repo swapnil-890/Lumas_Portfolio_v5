@@ -1,0 +1,164 @@
+---
+title: "Steel Raven"
+subtitle: "Biomimetic Drone Architecture — Carbon Fiber Frame"
+status: "Concept Design"
+stack: ["Fusion 360", "Carbon Fiber", "3D Printing", "BLDC Motors"]
+---
+
+## Problem
+
+Commercial quadcopter drones are optimized for stability, not agility. Biological corvids (crows, ravens) demonstrate superior flight characteristics:
+
+- Rapid direction changes
+- Efficient gliding
+- Perching on irregular surfaces
+- Load carrying relative to body weight
+
+**Goal:** Design a drone architecture that mimics corvid flight mechanics.
+
+## Approach
+
+### Biomimetic Principles
+
+| Biological Feature | Engineering Translation |
+|--------------------|------------------------|
+| Variable wing sweep | Articulated arm geometry |
+| Tail feathers | Stabilator surface |
+| Perching claws | Passive grip mechanism |
+| Lightweight skeleton | Carbon fiber truss frame |
+
+### Material Selection
+
+**Frame:** Carbon fiber reinforced polymer (CFRP)
+
+| Material | Specific Strength | Cost | Machinability |
+|----------|-------------------|------|---------------|
+| Aluminum 6061 | 77 kN·m/kg | Low | Easy |
+| Titanium Ti-6Al-4V | 213 kN·m/kg | High | Hard |
+| CFRP | 2187 kN·m/kg | Medium | Medium |
+
+**Chosen:** CFRP for primary structure, aluminum for motor mounts.
+
+## Architecture
+
+### Exploded View
+
+```
+                    ┌─────────────┐
+                    │  Canopy     │
+                    │  (3D print) │
+                    └──────┬──────┘
+                           │
+          ┌────────────────┼────────────────┐
+          │                │                │
+          ▼                ▼                ▼
+    ┌───────────┐   ┌───────────┐   ┌───────────┐
+    │  Arm FL   │   │  Frame    │   │  Arm FR   │
+    │  (CFRP)   │   │  (CFRP)   │   │  (CFRP)   │
+    └─────┬─────┘   └─────┬─────┘   └─────┬─────┘
+          │               │               │
+          ▼               ▼               ▼
+    ┌───────────┐   ┌───────────┐   ┌───────────┐
+    │  Motor FL │   │  FC Stack │   │  Motor FR │
+    │  2207     │   │  (30x30)  │   │  2207     │
+    └───────────┘   └───────────┘   └───────────┘
+```
+
+### Frame Geometry
+
+**Wheelbase:** 220mm (diagonal motor-to-motor)
+
+**Arm angle:** 45° forward sweep (mimics corvid wing position)
+
+**Arm cross-section:** I-beam profile (optimized stiffness-to-weight)
+
+## Design Specifications
+
+### Mechanical (Target)
+
+| Parameter | Target Value | Notes |
+|-----------|-------------|-------|
+| Wheelbase | 220mm | Diagonal motor-to-motor |
+| Frame weight | &lt; 70g | CFRP + aluminum mounts |
+| AUW (no payload) | &lt; 450g | With 4S 1500mAh |
+| Thrust-to-weight | &gt; 5:1 | Acrobatic capable |
+| Max payload | ~300g | Compute module + sensors |
+
+### Electrical (Planned)
+
+| Component | Specification |
+|-----------|---------------|
+| Motors | 2207 1800KV BLDC |
+| ESCs | 45A BLHeli_32 |
+| Flight Controller | SpeedyBee F405 |
+| Battery | 4S 1500mAh LiPo |
+| Radio | ExpressLRS 2.4GHz |
+
+### Compute Module (Planned)
+
+| Component | Specification | Purpose |
+|-----------|---------------|---------|
+| SBC | Raspberry Pi Zero 2 W | Onboard logic |
+| Camera | Pi Camera v3 | Vision input |
+| IMU | BNO085 | Orientation fusion |
+| Companion | ESP32 | Real-time control |
+
+## The Hardest 5%: Weight vs. Payload Trade-off
+
+**Constraint:** Every gram added to frame reduces payload capacity.
+
+**Analysis:**
+
+```
+Total thrust budget: ~2400g (4x 600g motors)
+Target hover weight: <450g (AUW)
+Available for payload: ~1950g theoretical
+Practical payload (50% control authority): ~300g
+
+Compute module budget: 150g
+- Pi Zero 2 W: 10g
+- Camera: 5g
+- IMU: 2g
+- Wiring: 15g
+- Mounting: 20g
+- Battery (separate): 50g
+- Margin: 48g
+```
+
+**Design approach:** Frame weight reduced through:
+1. I-beam arm profile (estimated 28% weight reduction vs solid)
+2. Topology optimization of frame plate
+3. CFRP motor mounts where possible
+
+## Design Challenges (Open)
+
+### Challenge 1: Arm-Root Stress Concentration
+
+**Concern:** Sharp corners at arm-root junction create stress concentration points.
+
+**Planned mitigation:** Fillet radius (3mm) at junction. Requires FEA validation before fabrication.
+
+### Challenge 2: Motor Vibration Isolation
+
+**Concern:** Frame resonance may overlap with motor RPM frequencies.
+
+**Planned mitigation:** TPU dampeners between motor mounts and arms. Resonance characterization needed after first prototype.
+
+### Challenge 3: GPS Antenna Placement
+
+**Concern:** Carbon fiber frame may block GPS signals. 3D printed canopy material selection affects RF performance.
+
+**Planned mitigation:** PETG canopy with antenna cutout. Needs testing.
+
+## Current Status
+
+This project is in **concept design phase**. No physical prototype has been built yet. The specifications above represent design targets and material selections based on research, not measured results.
+
+**Next steps:**
+1. Complete CAD model in Fusion 360
+2. Run FEA on arm-root junctions
+3. Fabricate first CFRP frame prototype
+4. Characterize vibration and resonance
+5. Integrate flight controller and test hover
+
+*Design files will be published when the first prototype is complete.*

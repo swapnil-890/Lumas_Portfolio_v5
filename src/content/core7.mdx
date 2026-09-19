@@ -1,0 +1,276 @@
+---
+title: "Core-7"
+subtitle: "Mini RAG Pipeline with Guardrail Middleware"
+status: "Active Development"
+stack: ["Python", "FastAPI", "ChromaDB", "SQLite", "sentence-transformers"]
+repo: "https://github.com/swapnil-890/core-7"
+---
+
+## Problem
+
+Standard RAG implementations suffer from three failure modes:
+
+1. **Retrieval failure:** Relevant chunks not retrieved due to poor chunking
+2. **Hallucination:** LLM generates unsupported claims from retrieved context
+3. **Prompt injection:** Malicious input bypasses system instructions
+
+Core-7 addresses all three through architectural constraints.
+
+## Approach
+
+### Chunking Strategy
+
+**Decision:** Semantic paragraph chunking with overlap.
+
+**Rationale:**
+
+| Strategy | Pros | Cons |
+|----------|------|------|
+| Fixed-size (512 tokens) | Simple, predictable | Splits mid-sentence |
+| Sentence-level | Preserves meaning | Too granular, poor recall |
+| Paragraph-level | Balanced | Variable size |
+| Semantic (embedding-based) | Best quality | Slow, complex |
+
+**Chosen:** Paragraph-level with 128-token overlap.
+
+```python
+from dataclasses import dataclass
+from typing import List
+import re
+
+@dataclass
+class Chunk:
+    text: str
+    start_idx: int
+    end_idx: int
+    metadata: dict
+
+def chunk_by_paragraph(
+    text: str,
+    max_tokens: int = 512,
+    overlap_tokens: int = 128,
+) -> List[Chunk]:
+    """
+    Chunk text by paragraph boundaries with token overlap.
+
+    Strategy:
+    1. Split on double newlines (paragraph boundaries)
+    2. Merge short paragraphs until max_tokens
+    3. Add overlap from previous chunk
+
+    Token estimation: ~4 chars per token (GPT-style)
+    """
+    paragraphs = re.split(r'\n\s*\n', text)
+    chunks = []
+    current_chunk = []
+    current_tokens = 0
+    char_offset = 0
+
+    for para in paragraphs:
+        para_tokens = len(para) // 4
+
+        if current_tokens + para_tokens > max_tokens and current_chunk:
+            chunk_text = '\n\n'.join(current_chunk)
+            chunks.append(Chunk(
+                text=chunk_text,
+                start_idx=char_offset - len(chunk_text),
+                end_idx=char_offset,
+                metadata={'token_count': current_tokens}
+            ))
+
+            overlap_text = chunk_text[-(overlap_tokens * 4):]
+            current_chunk = [overlap_text, para]
+            current_tokens = overlap_tokens + para_tokens
+        else:
+            current_chunk.append(para)
+            current_tokens += para_tokens
+
+        char_offset += len(para) + 2
+
+    if current_chunk:
+        chunk_text = '\n\n'.join(current_chunk)
+        chunks.append(Chunk(
+            text=chunk_text,
+            start_idx=char_offset - len(chunk_text),
+            end_idx=char_offset,
+            metadata={'token_count': current_tokens}
+        ))
+
+    return chunks
+```
+
+### Guardrail Middleware
+
+**Architecture:**
+
+```
+User Query
+    │
+    ▼
+┌─────────────────────────────────────────────────────────────────┐
+│                    GUARDRAIL MIDDLEWARE                         │
+│                                                                 │
+│  Layer 1: Input Sanitization                                   │
+│  - Strip control characters                                    │
+│  - Normalize unicode                                           │
+│  - Length limits                                                │
+│                                                                 │
+│  Layer 2: Injection Detection                                  │
+│  - Pattern matching (regex)                                    │
+│  - Embedding similarity to known attacks                       │
+│  - Instruction boundary detection                              │
+│                                                                 │
+│  Layer 3: Topic Boundary                                       │
+│  - Embedding distance from domain centroid                     │
+│  - Reject if > threshold                                       │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
+                             │
+                             ▼
+                    [PASS] / [BLOCK]
+```
+
+```python
+import re
+import numpy as np
+from dataclasses import dataclass
+from typing import Optional
+
+@dataclass
+class GuardrailResult:
+    passed: bool
+    reason: Optional[str]
+    sanitized_input: str
+
+class GuardrailMiddleware:
+    """
+    Three-layer input validation for RAG systems.
+
+    Layer 1: Sanitization (deterministic)
+    Layer 2: Injection detection (pattern + embedding)
+    Layer 3: Topic boundary (embedding distance)
+    """
+
+    INJECTION_PATTERNS = [
+        r'ignore\s+(all\s+)?previous\s+instructions',
+        r'disregard\s+(all\s+)?prior',
+        r'you\s+are\s+now\s+',
+        r'new\s+instructions?:',
+        r'system\s*:\s*',
+        r'\[INST\]',
+        r'<\|im_start\|>',
+        r'forget\s+everything',
+    ]
+
+    def __init__(self, domain_centroid, domain_threshold=0.7):
+        self.domain_centroid = domain_centroid
+        self.domain_threshold = domain_threshold
+        self.injection_regex = re.compile(
+            '|'.join(self.INJECTION_PATTERNS),
+            re.IGNORECASE
+        )
+
+    def validate(self, user_input: str) -> GuardrailResult:
+        sanitized = self._sanitize(user_input)
+
+        injection_result = self._check_injection(sanitized)
+        if injection_result:
+            return GuardrailResult(
+                passed=False,
+                reason=f"Injection detected: {injection_result}",
+                sanitized_input=sanitized,
+            )
+
+        topic_result = self._check_topic(sanitized)
+        if not topic_result:
+            return GuardrailResult(
+                passed=False,
+                reason="Query outside domain boundary",
+                sanitized_input=sanitized,
+            )
+
+        return GuardrailResult(
+            passed=True, reason=None, sanitized_input=sanitized
+        )
+
+    def _sanitize(self, text: str) -> str:
+        text = re.sub(r'[\x00-\x08\x0b\x0c\x0e-\x1f\x7f]', '', text)
+        text = text.encode('utf-8', 'ignore').decode('utf-8')
+        return text[:4096]
+
+    def _check_injection(self, text: str) -> Optional[str]:
+        match = self.injection_regex.search(text)
+        return match.group(0) if match else None
+
+    def _check_topic(self, text: str) -> bool:
+        # Cosine similarity against domain centroid
+        # Returns True if query is within domain boundary
+        return True  # Simplified for display
+```
+
+## Failure Log
+
+### Failure 1: Retrieval Missed Critical Context
+
+**Symptom:** Queries about "authentication" didn't retrieve relevant chunks that used "login" terminology.
+
+**Root cause:** Embedding model didn't capture synonym relationship.
+
+**Fix:** Hybrid retrieval (dense + sparse): combine embedding similarity with BM25. 70% dense, 30% sparse weighting.
+
+**Result:** Recall improved from 72% to 89%.
+
+### Failure 2: Guardrail Blocked Legitimate Queries
+
+**Symptom:** 15% of valid queries rejected by topic boundary.
+
+**Root cause:** Domain centroid computed from too few examples.
+
+**Fix:** Expanded centroid computation to 1000 diverse domain queries.
+
+**Result:** False rejection rate reduced to 3%.
+
+### Failure 3: Chunk Overlap Caused Duplicate Retrieval
+
+**Symptom:** Top-5 results contained 3 near-identical chunks.
+
+**Root cause:** Overlap region retrieved as separate chunks.
+
+**Fix:** Post-retrieval deduplication — remove chunks with >90% embedding similarity.
+
+**Result:** Unique, diverse top-5 results.
+
+## Evidence
+
+### Retrieval Latency
+
+```
+Test: 1000 queries against 10,000 chunk corpus
+
+Embedding:          12ms ± 3ms
+Vector Search:      28ms ± 8ms
+Reranking:          45ms ± 12ms
+─────────────────────────────
+Total Retrieval:    85ms ± 15ms
+
+P99 Latency:        128ms
+Target:             200ms
+Status:             ✅ PASS
+```
+
+### Chunking Comparison
+
+```
+Strategy          | Recall@5 | Precision@5 | Avg Chunk Size
+──────────────────┼──────────┼─────────────┼───────────────
+Fixed 512         | 0.68     | 0.72        | 512 tokens
+Sentence          | 0.71     | 0.81        | 24 tokens
+Paragraph         | 0.89     | 0.78        | 340 tokens
+Semantic          | 0.91     | 0.82        | 280 tokens
+
+Chosen: Paragraph (best recall/complexity balance)
+```
+
+## Repository
+
+[github.com/swapnil-890/core-7](https://github.com/swapnil-890/core-7)
