@@ -1,6 +1,8 @@
 import SectionShell from '../components/SectionShell'
 import StatusBadge from '../components/StatusBadge'
+import { ExternalLinkIcon } from '../components/Icons'
 import { personal } from '../data/personal'
+import { findKnowledgeEntity } from '../data/knowledge'
 
 const HANDS_ON_ITEMS = [
   'Linux environments',
@@ -96,14 +98,34 @@ function TokenList({ label, items }: { label: string; items: readonly string[] }
         {label}
       </p>
       <ul className="flex flex-wrap gap-1.5">
-        {items.map((item) => (
-          <li
-            key={item}
-            className="rounded-md border border-border bg-surface px-2.5 py-1 font-mono text-[11px] text-muted"
-          >
-            {item}
-          </li>
-        ))}
+        {items.map((item) => {
+          const entity = findKnowledgeEntity(item)
+          const destinationLabel =
+            entity?.resourceType === 'gfg'
+              ? `Open ${item} learning resource on GeeksforGeeks`
+              : `Open ${item} official documentation`
+
+          return (
+            <li key={item}>
+              {entity?.href ? (
+                <a
+                  href={entity.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={destinationLabel}
+                  className="group inline-flex items-center gap-1.5 rounded-md border border-border bg-surface px-2.5 py-1 font-mono text-[11px] text-muted transition-all duration-150 hover:border-accent-dim hover:text-accent hover:bg-elevated focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+                >
+                  <span>{item}</span>
+                  <ExternalLinkIcon className="h-2.5 w-2.5 opacity-60 group-hover:opacity-100 transition-opacity" />
+                </a>
+              ) : (
+                <span className="inline-block rounded-md border border-border bg-surface px-2.5 py-1 font-mono text-[11px] text-muted">
+                  {item}
+                </span>
+              )}
+            </li>
+          )
+        })}
       </ul>
     </div>
   )

@@ -36,32 +36,19 @@ function IstClock() {
 }
 
 function TelemetryStrip() {
-  const reduce = useReducedMotion()
-
   return (
-    <div className="flex flex-col items-start gap-1.5 sm:items-end">
-      <span className="inline-flex items-center gap-2 font-mono text-[11px] uppercase tracking-widest2 text-accent">
-        <span
-          className={`h-2 w-2 rounded-full bg-accent ${
-            reduce ? '' : 'animate-pulse'
-          }`}
-          aria-hidden="true"
-        />
-        <span>SYSTEM ONLINE</span>
+    <div
+      className="flex flex-wrap items-center gap-1.5 font-mono text-[10px] tracking-wide text-subtle [overflow-wrap:anywhere] sm:justify-end"
+      aria-label="Runtime telemetry"
+    >
+      <span className="inline-flex items-center gap-1.5 text-accent font-medium">
+        <span className="h-1.5 w-1.5 rounded-full bg-accent" aria-hidden="true" />
+        <span>TELEMETRY · IST (UTC+5:30) · LOCAL RUNTIME [CSR-STATIC]</span>
       </span>
-      {/* decorative — not real telemetry */}
-      <div
-        className="flex flex-wrap items-center gap-1 font-mono text-[10px] tracking-wide text-subtle"
-        aria-hidden="true"
-      >
-        <span className="whitespace-nowrap">[SYS_LOAD: OPTIMAL]</span>
-        <span className="text-border">|</span>
-        <span className="whitespace-nowrap">[MODEL_V: 1.0.4]</span>
-        <span className="text-border">|</span>
-        <span className="whitespace-nowrap text-accent">
-          [IST: <IstClock />]
-        </span>
-      </div>
+      <span className="text-border" aria-hidden="true">|</span>
+      <span className="whitespace-nowrap text-accent">
+        [<IstClock />]
+      </span>
     </div>
   )
 }
@@ -98,12 +85,9 @@ export default function SectionInfo() {
             </p>
           </div>
 
-          <div className="mt-8 rounded-md border border-border bg-elevated/80 p-3.5 font-mono text-[11px] uppercase tracking-widest2 text-subtle flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
-            <span>TELEMETRY · IST (UTC+5:30)</span>
-            <span className="text-fg font-mono text-xs flex items-center gap-1.5">
-              <span>LOCAL RUNTIME</span>
-              <span className="text-accent font-mono text-[10px]">[CSR-STATIC]</span>
-            </span>
+          <div className="mt-8 rounded-md border border-border bg-elevated/80 p-3.5 font-mono text-[11px] uppercase tracking-widest2 text-subtle flex flex-wrap items-center justify-between gap-2">
+            <span>TELEMETRY · IST (UTC+5:30) · LOCAL RUNTIME</span>
+            <span className="text-accent font-mono text-[10px]">[CSR-STATIC]</span>
           </div>
         </Panel>
 

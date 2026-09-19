@@ -1,5 +1,8 @@
 import SectionShell from '../components/SectionShell'
 import { personal } from '../data/personal'
+import { ExternalLinkIcon } from '../components/Icons'
+import AskLumas from '../components/AskLumas'
+import { findKnowledgeEntity } from '../data/knowledge'
 
 interface NodePoint {
   readonly x: number
@@ -70,16 +73,39 @@ export default function SectionWhoAmI() {
         </div>
 
         <ul className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-          {personal.focusAreas.map((area) => (
-            <li
-              key={area}
-              className="rounded-md border border-border bg-surface px-3 py-3 text-center font-mono text-[11px] uppercase tracking-widest2 text-muted"
-            >
-              {area}
-            </li>
-          ))}
+          {personal.focusAreas.map((area) => {
+            const entity = findKnowledgeEntity(area)
+            return (
+              <li
+                key={area}
+                className="group relative rounded-md border border-border bg-surface text-center font-mono text-[11px] uppercase tracking-widest2 transition-all duration-150 hover:border-accent-dim hover:bg-elevated"
+              >
+                {entity?.href ? (
+                  <a
+                    href={entity.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={`Open ${area} reference on Wikipedia`}
+                    className="flex h-full w-full items-center justify-center gap-1.5 px-3 py-3 text-muted group-hover:text-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent rounded-md"
+                  >
+                    <span className="underline decoration-accent/40 decoration-dotted underline-offset-4">
+                      {area}
+                    </span>
+                    <ExternalLinkIcon className="h-3 w-3 opacity-60 group-hover:opacity-100 transition-opacity" />
+                  </a>
+                ) : (
+                  <div className="px-3 py-3 text-muted">
+                    {area}
+                  </div>
+                )}
+              </li>
+            )
+          })}
         </ul>
       </div>
+
+      {/* Ask Lumas Deterministic Query Console */}
+      <AskLumas />
     </SectionShell>
   )
 }

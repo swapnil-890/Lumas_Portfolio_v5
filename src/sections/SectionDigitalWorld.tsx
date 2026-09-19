@@ -4,6 +4,7 @@ import StatusBadge from '../components/StatusBadge'
 import { projects } from '../data/projects'
 import type { ProjectStatus } from '../data/projects'
 import { ideas } from '../data/ideas'
+import { GAME_ENTITIES } from '../data/knowledge'
 
 // Deviation D1: blueprint literal -> composite status string; approved by user.
 const PULSING_STATUSES: ReadonlySet<ProjectStatus> = new Set<ProjectStatus>([
@@ -116,6 +117,65 @@ export default function SectionDigitalWorld() {
                 <span className="text-sm text-fg">{idea.title}</span>
               </div>
               <StatusBadge label={idea.status} tone="muted" />
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      {/* Game Shelf — Personal Gaming Interests */}
+      <div>
+        <div className="mb-4 flex items-baseline justify-between">
+          <p className="font-mono text-[11px] uppercase tracking-widest2 text-subtle">
+            Game // Interests
+          </p>
+          <span className="font-mono text-[11px] uppercase tracking-widest2 text-subtle">
+            Fighting & Action RPG
+          </span>
+        </div>
+        <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          {GAME_ENTITIES.map((game) => (
+            <li
+              key={game.id}
+              className="flex flex-col justify-between rounded-md border border-border bg-surface p-4 transition-colors hover:border-accent-dim/60"
+            >
+              <div>
+                <div className="flex items-start justify-between gap-2">
+                  <h4 className="font-mono text-sm font-medium text-fg">
+                    {game.label}
+                  </h4>
+                  <span className="inline-flex shrink-0 items-center rounded border border-border px-1.5 py-0.5 font-mono text-[10px] uppercase tracking-wider text-accent">
+                    {game.subcategory}
+                  </span>
+                </div>
+                <p className="mt-2 text-xs leading-relaxed text-muted">
+                  {game.summary}
+                </p>
+              </div>
+
+              <div className="mt-4 flex items-center justify-between border-t border-border/60 pt-3">
+                <div className="flex flex-wrap gap-1">
+                  {game.tags?.slice(0, 2).map((t) => (
+                    <span
+                      key={t}
+                      className="rounded bg-elevated px-1.5 py-0.5 font-mono text-[10px] text-subtle"
+                    >
+                      {t}
+                    </span>
+                  ))}
+                </div>
+                {game.href ? (
+                  <a
+                    href={game.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={`Open ${game.label} official portal`}
+                    className="group inline-flex items-center gap-1 font-mono text-[11px] text-subtle transition-colors hover:text-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent rounded"
+                  >
+                    <span>Official</span>
+                    <ExternalLinkIcon className="h-3 w-3 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                  </a>
+                ) : null}
+              </div>
             </li>
           ))}
         </ul>
