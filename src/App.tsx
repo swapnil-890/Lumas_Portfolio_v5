@@ -7,8 +7,6 @@ import SectionPFP from './sections/SectionPFP'
 import SectionWhoAmI from './sections/SectionWhoAmI'
 import SectionIntroduction from './sections/SectionIntroduction'
 import SectionDigitalWorld from './sections/SectionDigitalWorld'
-import SectionSomethingSpecial from './sections/SectionSomethingSpecial'
-import { FEATURES } from './config/features'
 import { socials } from './data/socials'
 
 interface SectionDef extends NavSection {
@@ -16,23 +14,13 @@ interface SectionDef extends NavSection {
 }
 
 export default function App() {
-  const sections = useMemo<readonly SectionDef[]>(() => {
-    const base: SectionDef[] = [
-      { id: 'info', label: 'Info', Component: SectionInfo },
-      { id: 'pfp', label: 'PFP', Component: SectionPFP },
-      { id: 'who-am-i', label: 'Who Am I', Component: SectionWhoAmI },
-      { id: 'introduction', label: 'Introduction', Component: SectionIntroduction },
-      { id: 'digital-world', label: 'Digital World', Component: SectionDigitalWorld },
-    ]
-    if (FEATURES.secretArchive.enabled) {
-      base.push({
-        id: 'something-special',
-        label: 'Special',
-        Component: SectionSomethingSpecial,
-      })
-    }
-    return base
-  }, [])
+  const sections = useMemo<readonly SectionDef[]>(() => [
+    { id: 'info', label: 'Info', Component: SectionInfo },
+    { id: 'pfp', label: 'PFP', Component: SectionPFP },
+    { id: 'who-am-i', label: 'Who Am I', Component: SectionWhoAmI },
+    { id: 'introduction', label: 'Introduction', Component: SectionIntroduction },
+    { id: 'digital-world', label: 'Digital World', Component: SectionDigitalWorld },
+  ], [])
 
   const [activeIndex, setActiveIndex] = useState(0)
   const [isPaletteOpen, setIsPaletteOpen] = useState(false)

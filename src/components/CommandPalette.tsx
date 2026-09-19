@@ -3,7 +3,6 @@ import { motion, AnimatePresence, useReducedMotion } from 'framer-motion'
 import { projects } from '../data/projects'
 import { ideas } from '../data/ideas'
 import { personal } from '../data/personal'
-import { FEATURES } from '../config/features'
 
 export interface PaletteItem {
   id: string
@@ -87,15 +86,6 @@ export default function CommandPalette({
         action: () => onNavigateSection('digital-world'),
       },
     ]
-
-    if (FEATURES.secretArchive.enabled) {
-      items.push({
-        id: 'sec-archive',
-        title: '06 — Something Special / Secret Archive',
-        category: 'Section',
-        action: () => onNavigateSection('something-special'),
-      })
-    }
 
     // Projects
     projects.forEach((p) => {

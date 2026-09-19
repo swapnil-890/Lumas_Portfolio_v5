@@ -24,36 +24,32 @@ npm run lint
 ```
 src/
 ├── App.tsx                     # section registry + nav + keyboard + IO
-├── config/features.ts          # feature flags (secretArchive.enabled)
 ├── data/                       # all personal content lives here
 │   ├── personal.ts
 │   ├── projects.ts
 │   ├── ideas.ts
 │   └── socials.ts
 ├── components/
+│   ├── CommandPalette.tsx
+│   ├── Icons.tsx
+│   ├── Lightbox.tsx
 │   ├── Navigation.tsx
+│   ├── Panel.tsx
 │   ├── SectionIndicator.tsx
 │   ├── SectionShell.tsx
 │   └── StatusBadge.tsx
-├── sections/                   # six sections (01–06)
-└── features/secretArchive/     # Section 06 prototype portal
+└── sections/                   # five sections (01–05)
+    ├── SectionInfo.tsx
+    ├── SectionPFP.tsx
+    ├── SectionWhoAmI.tsx
+    ├── SectionIntroduction.tsx
+    └── SectionDigitalWorld.tsx
 ```
 
 ### Content is data-driven
 
 Edit `src/data/*.ts` to change content. Components consume the data. Personal
 information is never hardcoded inside JSX.
-
-### Section 06 feature flag
-
-`src/config/features.ts`:
-
-```ts
-export const FEATURES = { secretArchive: { enabled: true } }
-```
-
-When set to `false`, Section 06 is removed and navigation automatically
-recalculates to `01 / 05 … 05 / 05`.
 
 ## Deployment
 
@@ -66,11 +62,5 @@ LUMAS™ v2.0 elevates the visual identity to a cinematic, technical personal di
 - **Layered Charcoal Palette**: Refined dark theme (`#090A0F` base, `#0F1018` surface, `#12131A` elevated, `#181A22` overlay) with scientific-blue accent (`#4C8DFF`).
 - **Geist Typography**: Modern typographical foundation utilizing Geist Sans and Geist Mono via `@fontsource`.
 - **Bento Info Grid**: Section 01 redesigned as a responsive bento grid with live IST telemetry readout, SYSTEM ONLINE status indicator, vital specs, and Wikipedia-linked interests.
-- **Instagram-Style Profile Disc**: Section 02 profile disc featuring a 22s rotating conic-gradient ring, dual-portrait dot switcher, and zero-scale hover response.
+- **3D Profile Data Coin**: Section 02 profile disc featuring a 22s rotating conic-gradient ring, dual-portrait 3D flip card, and dedicated expand trigger.
 - **Command Palette (`Cmd/Ctrl + K`)**: Accessible, keyboard-first modal enabling instant search and navigation across sections, projects, ideas, and Wikipedia topics with isolated navigation guards.
-- **5-Slot Archive Reorganization**: Normalized 5-slot structure (`1st One`, `2nd One`, `3rd One`, `4th One`, `Childhood Crush`) with hardened neutral passphrase gate (`placeholder="Enter passphrase"`).
-
-## Section 06 — Security Warning
-
-The private archive uses a **prototype, client-side passphrase gate**. This is
-not security. Read `SECURITY.md` before adding any real private content.
