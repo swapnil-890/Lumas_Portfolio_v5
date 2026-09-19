@@ -28,21 +28,24 @@ const skills = {
 function SkillCard({ skill }: { skill: Skill }) {
   const content = (
     <>
-      <p className="text-sm font-semibold text-slate-100 group-hover:text-amber-500 transition-colors">{skill.name}</p>
+      <p className="text-sm font-semibold text-slate-100 group-hover:text-cyan transition-colors">{skill.name}</p>
       <p className="text-xs text-slate-400 mt-1">{skill.context}</p>
     </>
   );
 
   if (skill.href) {
     return (
-      <Link href={skill.href} className="p-3 border border-slate-800 rounded-lg hover:border-amber-500/50 group transition-colors block">
+      <Link
+        href={skill.href}
+        className="p-3.5 border border-border-soft bg-glass hover:bg-glass-hover hover:border-border-strong hover:shadow-cyan-glow backdrop-blur-xl rounded-lg group transition-all duration-300 block transform hover:-translate-y-0.5"
+      >
         {content}
       </Link>
     );
   }
 
   return (
-    <div className="p-3 border border-slate-800 rounded-lg group">
+    <div className="p-3.5 border border-border-soft bg-glass hover:bg-glass-hover hover:border-border-strong backdrop-blur-xl rounded-lg group transition-all duration-300">
       {content}
     </div>
   );

@@ -11,6 +11,34 @@ const config: Config = {
         mono: ['JetBrains Mono', 'Fira Code', 'monospace'],
       },
       colors: {
+        // Deep tech & soft dark surfaces
+        'deep-tech': '#04050a',
+        'soft-dark': '#0a0c15',
+
+        // V6 Vibrant Accents
+        cyan: {
+          DEFAULT: '#00e5ff',
+          400: '#00e5ff',
+          500: '#00b4d8',
+        },
+        violet: {
+          DEFAULT: '#7c5cff',
+          400: '#7c5cff',
+          500: '#6342e6',
+        },
+        pink: {
+          DEFAULT: '#ff3d9a',
+          400: '#ff3d9a',
+        },
+
+        // Glass tokens
+        glass: 'rgba(255, 255, 255, 0.028)',
+        'glass-hover': 'rgba(255, 255, 255, 0.055)',
+
+        // Border tokens
+        'border-soft': 'rgba(255, 255, 255, 0.08)',
+        'border-strong': 'rgba(255, 255, 255, 0.16)',
+
         slate: {
           950: '#020617',
           900: '#0f172a',
@@ -27,6 +55,12 @@ const config: Config = {
           DEFAULT: '#f59e0b',
           muted: '#b45309',
         },
+      },
+      backgroundImage: {
+        'gradient-v6': 'linear-gradient(110deg, #00e5ff 0%, #7c5cff 55%, #ff3d9a 100%)',
+      },
+      boxShadow: {
+        'cyan-glow': '0 0 20px rgba(0, 229, 255, 0.25)',
       },
       typography: {
         DEFAULT: {

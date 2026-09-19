@@ -1,5 +1,7 @@
 import type { Metadata } from 'next';
 import '@/styles/globals.css';
+import { NeuralBackground } from '@/components/NeuralBackground';
+import dynamic from 'next/dynamic';
 
 export const metadata: Metadata = {
   title: {
@@ -19,25 +21,6 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
-  return (
-    <html lang="en" className="bg-slate-950">
-      <body className="min-h-screen bg-slate-950 text-slate-100 antialiased font-sans">
-        {children}
-        {/* CommandPalette is rendered client-side and imported dynamically */}
-        <CommandPaletteWrapper />
-      </body>
-    </html>
-  );
-}
-
-// Dynamic import to avoid SSR issues with cmdk
-import dynamic from 'next/dynamic';
-
 const CommandPaletteWrapper = dynamic(
   () =>
     import('@/components/command-palette/CommandPalette').then(
@@ -45,3 +28,22 @@ const CommandPaletteWrapper = dynamic(
     ),
   { ssr: false }
 );
+
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  return (
+    <html lang="en" className="bg-deep-tech">
+      <body className="min-h-screen bg-deep-tech text-slate-100 antialiased font-sans relative selection:bg-violet selection:text-white">
+        {/* Global Native Canvas 2D Neural Background with reduced-motion support */}
+        <NeuralBackground />
+        {/* Explicit stacking context ensuring all page content renders above background */}
+        <div className="relative z-10">{children}</div>
+        {/* CommandPalette is rendered client-side and imported dynamically */}
+        <CommandPaletteWrapper />
+      </body>
+    </html>
+  );
+}

@@ -1,5 +1,7 @@
 import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
+import { ideas } from '@/data/ideas';
+import { personal } from '@/data/personal';
 
 const interests = [
   {
@@ -70,6 +72,47 @@ export default function OffDutyPage() {
             </ul>
           </div>
         ))}
+      </div>
+
+      {/* Concept Exploration (Ideas) */}
+      <div className="mt-16 pt-8 border-t border-slate-800">
+        <h2 className="text-xs font-mono uppercase tracking-widest text-slate-500 mb-6">
+          Concept Exploration
+        </h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          {ideas.map((idea) => (
+            <div
+              key={idea.id}
+              className="p-4 rounded-lg border border-slate-800 bg-slate-900/50 hover:border-slate-700 transition-colors"
+            >
+              <div className="flex items-center justify-between gap-2 mb-1">
+                <span className="font-mono text-xs text-slate-500">{idea.index}</span>
+                <span className="font-mono text-[10px] px-2 py-0.5 rounded bg-slate-800 text-cyan-400 border border-slate-700">
+                  {idea.status}
+                </span>
+              </div>
+              <h3 className="text-sm font-medium text-slate-200">{idea.title}</h3>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Operating Principles (Dislikes) */}
+      <div className="mt-12 pt-8 border-t border-slate-800">
+        <h2 className="text-xs font-mono uppercase tracking-widest text-slate-500 mb-6">
+          Operating Principles
+        </h2>
+        <ul className="space-y-3">
+          {personal.dislikes.map((dislike) => (
+            <li
+              key={dislike}
+              className="text-sm text-slate-400 leading-relaxed font-mono flex items-start gap-2"
+            >
+              <span className="text-slate-600 select-none">›</span>
+              <span>{dislike}</span>
+            </li>
+          ))}
+        </ul>
       </div>
 
       <div className="mt-16 pt-8 border-t border-slate-800">

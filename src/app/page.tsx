@@ -1,10 +1,12 @@
 import { getRecentCommits } from '@/lib/github';
 import { IdentityHeader } from '@/components/layout/IdentityHeader';
 import { CurrentFocus } from '@/components/layout/CurrentFocus';
+import { Terminal } from '@/components/Terminal';
 import { ProjectIndex } from '@/components/layout/ProjectIndex';
 import { SkillsMatrix } from '@/components/layout/SkillsMatrix';
 import { Footer } from '@/components/layout/Footer';
 import { CommitTicker } from '@/components/github/CommitTicker';
+import AskLumas from '@/components/AskLumas';
 
 export const revalidate = 3600;
 
@@ -16,6 +18,8 @@ export default async function HomePage() {
       <IdentityHeader />
 
       <CurrentFocus />
+
+      <Terminal />
 
       <section className="mb-16">
         <h2 className="text-xs font-mono uppercase tracking-widest text-slate-500 mb-4">
@@ -68,6 +72,10 @@ export default async function HomePage() {
       />
 
       <SkillsMatrix />
+
+      <section className="mt-16 mb-16" aria-label="Interactive Query Console">
+        <AskLumas />
+      </section>
 
       <Footer />
     </main>

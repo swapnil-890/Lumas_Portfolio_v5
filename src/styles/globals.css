@@ -5,34 +5,61 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
 
 @layer base {
+  :root {
+    color-scheme: dark;
+  }
+
   html {
     @apply scroll-smooth;
+    background-color: #04050a;
   }
 
   body {
-    @apply bg-slate-950 text-slate-300;
+    background-color: #04050a;
+    color: #cbd5e1;
     font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
+    overflow-x: hidden;
   }
 
   ::selection {
-    @apply bg-amber-500/30 text-slate-100;
+    background: #7c5cff;
+    color: #ffffff;
   }
 
-  /* Scrollbar */
+  /* Custom scrollbar — restrained cyan to violet */
   ::-webkit-scrollbar {
-    @apply w-2;
+    width: 6px;
+    height: 6px;
   }
 
   ::-webkit-scrollbar-track {
-    @apply bg-slate-900;
+    background: #04050a;
   }
 
   ::-webkit-scrollbar-thumb {
-    @apply bg-slate-700 rounded-full;
+    background: linear-gradient(180deg, #00e5ff 0%, #7c5cff 100%);
+    border-radius: 9999px;
   }
 
   ::-webkit-scrollbar-thumb:hover {
-    @apply bg-slate-600;
+    background: linear-gradient(180deg, #00b4d8 0%, #6342e6 100%);
+  }
+
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: #7c5cff #04050a;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto !important;
+    }
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
   }
 }
 
@@ -48,9 +75,13 @@
     @apply prose-table:text-sm;
     @apply prose-th:text-left prose-th:font-mono prose-th:text-xs prose-th:uppercase prose-th:tracking-wider prose-th:text-slate-500;
     @apply prose-td:py-2;
-    @apply prose-a:text-amber-500 prose-a:no-underline hover:prose-a:underline;
-    @apply prose-blockquote:border-l-amber-500 prose-blockquote:bg-slate-900/50 prose-blockquote:py-1 prose-blockquote:px-4 prose-blockquote:rounded-r;
+    @apply prose-a:text-cyan-400 prose-a:no-underline hover:prose-a:underline;
+    @apply prose-blockquote:border-l-cyan-500 prose-blockquote:bg-slate-900/50 prose-blockquote:py-1 prose-blockquote:px-4 prose-blockquote:rounded-r;
     @apply prose-strong:text-slate-100;
     @apply prose-li:marker:text-slate-600;
+  }
+
+  .border-gradient-v6 {
+    border-image: linear-gradient(110deg, #00e5ff 0%, #7c5cff 55%, #ff3d9a 100%) 1;
   }
 }
