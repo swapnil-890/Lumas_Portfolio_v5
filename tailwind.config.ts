@@ -11,14 +11,24 @@ const config: Config = {
         mono: ['JetBrains Mono', 'Fira Code', 'monospace'],
       },
       colors: {
-        // Deep tech & soft dark surfaces
-        'deep-tech': '#04050a',
-        'soft-dark': '#0a0c15',
+        // Single Source-of-Truth Semantic Tokens (§15.1)
+        bg: 'var(--color-bg)',
+        surface: 'var(--color-surface)',
+        'surface-border': 'var(--color-border)',
+        'surface-border-strong': 'var(--color-border-strong)',
+        fg: 'var(--color-fg)',
+        'fg-dim': 'var(--color-fg-dim)',
+        'fg-muted': 'var(--color-fg-muted)',
+        signal: 'var(--color-signal)',
 
-        // V6 Vibrant Accents
+        // Deep tech & soft dark surfaces
+        'deep-tech': '#08080a',
+        'soft-dark': '#121216',
+
+        // Vibrant Accents
         cyan: {
-          DEFAULT: '#00e5ff',
-          400: '#00e5ff',
+          DEFAULT: '#00f5ff',
+          400: '#00f5ff',
           500: '#00b4d8',
         },
         violet: {
@@ -36,8 +46,8 @@ const config: Config = {
         'glass-hover': 'rgba(255, 255, 255, 0.055)',
 
         // Border tokens
-        'border-soft': 'rgba(255, 255, 255, 0.08)',
-        'border-strong': 'rgba(255, 255, 255, 0.16)',
+        'border-soft': 'var(--color-border)',
+        'border-strong': 'var(--color-border-strong)',
 
         slate: {
           950: '#020617',

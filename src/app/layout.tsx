@@ -1,7 +1,19 @@
 import type { Metadata } from 'next';
+import { Inter, JetBrains_Mono } from 'next/font/google';
 import '@/styles/globals.css';
-import { NeuralBackground } from '@/components/NeuralBackground';
 import dynamic from 'next/dynamic';
+
+const inter = Inter({
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-sans',
+});
+
+const jetbrainsMono = JetBrains_Mono({
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-mono',
+});
 
 export const metadata: Metadata = {
   title: {
@@ -9,17 +21,19 @@ export const metadata: Metadata = {
     template: '%s | Swapnil Roy',
   },
   description:
-    'I engineer intelligent systems and physical architectures. Currently focused on AI security (VOVERA), retrieval-augmented systems (Core-7), and biomimetic robotics (Steel Raven).',
+    'EXPLORING AI/ML, ROBOTICS, AND PHYSICAL COMPUTING AT FIRST PRINCIPLES.',
   metadataBase: new URL(
     process.env.NEXT_PUBLIC_SITE_URL || 'https://swapnilroy.dev'
   ),
   openGraph: {
     title: 'Swapnil Roy — AI & Systems Engineer',
     description:
-      'Engineering intelligent systems and physical architectures.',
+      'Exploring AI/ML, robotics, and physical computing at first principles.',
     type: 'website',
   },
 };
+
+import { NavigationDock } from '@/components/layout/NavigationDock';
 
 const CommandPaletteWrapper = dynamic(
   () =>
@@ -35,11 +49,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className="bg-deep-tech">
-      <body className="min-h-screen bg-deep-tech text-slate-100 antialiased font-sans relative selection:bg-violet selection:text-white">
-        {/* Global Native Canvas 2D Neural Background with reduced-motion support */}
-        <NeuralBackground />
-        {/* Explicit stacking context ensuring all page content renders above background */}
+    <html
+      lang="en"
+      className={`${inter.variable} ${jetbrainsMono.variable} bg-bg font-sans`}
+    >
+      <body className="min-h-screen bg-bg text-fg antialiased font-sans relative selection:bg-accent/20 selection:text-accent">
+        <NavigationDock />
+        {/* Explicit stacking context ensuring all page content renders above dot-grid background */}
         <div className="relative z-10">{children}</div>
         {/* CommandPalette is rendered client-side and imported dynamically */}
         <CommandPaletteWrapper />

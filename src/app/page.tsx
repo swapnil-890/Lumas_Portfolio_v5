@@ -1,12 +1,13 @@
+// src/app/page.tsx
+// Unified 5-Section Systems Dashboard Shell (§14.3, §17)
 import { getRecentCommits } from '@/lib/github';
-import { IdentityHeader } from '@/components/layout/IdentityHeader';
-import { CurrentFocus } from '@/components/layout/CurrentFocus';
+import { OverviewBento } from '@/components/overview/OverviewBento';
 import { Terminal } from '@/components/Terminal';
-import { ProjectIndex } from '@/components/layout/ProjectIndex';
-import { SkillsMatrix } from '@/components/layout/SkillsMatrix';
-import { Footer } from '@/components/layout/Footer';
 import { CommitTicker } from '@/components/github/CommitTicker';
-import AskLumas from '@/components/AskLumas';
+import { SystemsSection } from '@/components/sections/SystemsSection';
+import { LabSection } from '@/components/sections/LabSection';
+import { StackSection } from '@/components/sections/StackSection';
+import { DispatchSection } from '@/components/sections/DispatchSection';
 
 export const revalidate = 3600;
 
@@ -14,70 +15,37 @@ export default async function HomePage() {
   const commits = await getRecentCommits(5);
 
   return (
-    <main className="max-w-4xl mx-auto px-6 py-16">
-      <IdentityHeader />
+    <main id="main-content" className="max-w-5xl mx-auto px-4 sm:px-6 py-8">
+      {/* 01 // OVERVIEW & TELEMETRY */}
+      <OverviewBento />
 
-      <CurrentFocus />
+      {/* INTERACTIVE TELEMETRY TERMINAL */}
+      <div className="mb-16">
+        <Terminal />
+      </div>
 
-      <Terminal />
-
-      <section className="mb-16">
-        <h2 className="text-xs font-mono uppercase tracking-widest text-slate-500 mb-4">
-          Build Log
-        </h2>
+      {/* BUILD LOG / GITHUB TELEMETRY */}
+      <section className="mb-16" aria-label="Recent development log">
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-xs font-mono uppercase tracking-widest text-fg-muted">
+            Telemetry // Build Log
+          </h2>
+          <span className="font-mono text-[11px] text-fg-muted">Recent GitHub Commits</span>
+        </div>
         <CommitTicker commits={commits} />
       </section>
 
-      <ProjectIndex
-        projects={[
-          {
-            slug: 'vovera',
-            title: 'VOVERA',
-            subtitle: 'Real-Time Voice Attack Detection Pipeline',
-            status: 'Prototype',
-            stack: ['Python', 'FastAPI', 'SQLite', 'Librosa'],
-            metrics: [
-              { label: 'P99 Latency', value: '142ms' },
-              { label: 'Target', value: '<500ms' },
-            ],
-            href: '/work/vovera',
-            repoUrl: 'https://github.com/swapnil-890/vovera',
-          },
-          {
-            slug: 'core7',
-            title: 'Core-7',
-            subtitle: 'Mini RAG Pipeline with Guardrail Middleware',
-            status: 'Active Development',
-            stack: ['Python', 'FastAPI', 'ChromaDB', 'sentence-transformers'],
-            metrics: [
-              { label: 'Retrieval Recall', value: '89%' },
-              { label: 'P99 Latency', value: '128ms' },
-            ],
-            href: '/work/core7',
-            repoUrl: 'https://github.com/swapnil-890/core-7',
-          },
-          {
-            slug: 'steel-raven',
-            title: 'Steel Raven',
-            subtitle: 'Biomimetic Drone Architecture',
-            status: 'Concept Design',
-            stack: ['Fusion 360', 'CFRP', '3D Printing'],
-            metrics: [
-              { label: 'Frame Weight', value: '68g' },
-              { label: 'Thrust/Weight', value: '5.7:1' },
-            ],
-            href: '/work/steel-raven',
-          },
-        ]}
-      />
+      {/* 02 // SYSTEMS (Primary Engineering Proof Layer) */}
+      <SystemsSection />
 
-      <SkillsMatrix />
+      {/* 03 // LAB (Robotics & Physical Experimentation) */}
+      <LabSection />
 
-      <section className="mt-16 mb-16" aria-label="Interactive Query Console">
-        <AskLumas />
-      </section>
+      {/* 04 // STACK (Classified Technical Ecosystem) */}
+      <StackSection />
 
-      <Footer />
+      {/* 05 // DISPATCH & COMMS (Communication, Interactive Query Console & Footer) */}
+      <DispatchSection />
     </main>
   );
 }

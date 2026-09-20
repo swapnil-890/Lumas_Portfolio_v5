@@ -2,23 +2,50 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
-
 @layer base {
   :root {
     color-scheme: dark;
+
+    /* Single Source-of-Truth Surface Tokens (§15.1) */
+    --color-bg: #08080a;
+    --color-surface: #121216;
+    --color-border: rgba(255, 255, 255, 0.10);
+    --color-border-strong: rgba(255, 255, 255, 0.18);
+
+    /* Text Contrast Tokens (measured >= 4.5:1) */
+    --color-fg: #f2f2f4;
+    --color-fg-dim: #b4b4bd;
+    --color-fg-muted: #8b8b94;
+
+    /* Semantic Accents */
+    --color-accent: #00f5ff; /* Interaction: links, focus, active nav */
+    --color-signal: #10b981; /* Telemetry/operational state only */
+
+    --radius-card: 14px;
   }
 
   html {
     @apply scroll-smooth;
-    background-color: #04050a;
+    background-color: #08080a;
   }
 
   body {
-    background-color: #04050a;
-    color: #cbd5e1;
+    background-color: #08080a;
+    color: #f2f2f4;
     font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
     overflow-x: hidden;
+  }
+
+  /* Static, low-contrast, GPU-cheap background texture (§15.3) */
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background-image: radial-gradient(rgba(255, 255, 255, 0.06) 1px, transparent 1px);
+    background-size: 24px 24px;
+    mask-image: radial-gradient(ellipse at 50% 0%, #000 30%, transparent 85%);
   }
 
   ::selection {
